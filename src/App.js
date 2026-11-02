@@ -1,7 +1,12 @@
-import { Heading } from "@chakra-ui/react";
+import MainLayOut from "./layouts/MainLayOut.jsx";
+import AppRoutes from "./routes/AppRoutes.js";
 
 function App() {
-  return <Heading>React app using chakra ui</Heading>;
+  return (
+    <MainLayOut>
+      <AppRoutes />
+    </MainLayOut>
+  );
 }
 
 export default App;

@@ -3,13 +3,19 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
+import { ChakraProvider, createLocalStorageManager } from "@chakra-ui/react";
+import { Theme } from "./components/ui/theme.jsx";
+import "./i18n.js";
+
+const colorModeManager = createLocalStorageManager(
+  "smart-citizen-app-color-mode",
+);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <ChakraProvider value={defaultSystem}>
+      <ChakraProvider theme={Theme} colorModeManager={colorModeManager}>
         <App />
       </ChakraProvider>
     </BrowserRouter>
