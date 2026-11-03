@@ -1,5 +1,4 @@
-import { Tooltip, IconButton } from "@chakra-ui/react";
-import { LuLanguages } from "react-icons/lu";
+import { Tooltip, Button } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 export default function ToggleLang() {
@@ -10,13 +9,13 @@ export default function ToggleLang() {
     <Tooltip
       label={!isArabic ? "Switch Language" : " تبديل اللغة "}
       placement="bottom">
-      <IconButton
+      <Button
         bg="icon-btn"
         aria-label={isArabic ? "Switch to English" : "التبديل إلى العربية"}
-        icon={<LuLanguages />}
         variant="ghost"
-        onClick={() => i18n.changeLanguage(isArabic ? "en" : "ar")}
-      />
+        onClick={() => i18n.changeLanguage(isArabic ? "en" : "ar")}>
+        {isArabic ? "EN" : "AR"}
+      </Button>
     </Tooltip>
   );
 }
