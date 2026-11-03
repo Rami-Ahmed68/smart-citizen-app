@@ -1,10 +1,19 @@
-import { Lazy, suspense } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
-import { Box } from "@chakra-ui/react";
+// src/routes/AppRoutes.jsx
+import { lazy, Suspense } from "react";
+import { Routes, Route, useLocation, Outlet } from "react-router-dom";
+import { Box, Center, Spinner } from "@chakra-ui/react";
 
-import HomePage from "../pages/home/HomePage.jsx";
-import CitizensPage from "../pages/citizens/CitizenPages.jsx";
-import AdminsPage from "../pages/admin/AdminsPage.jsx";
+import ProtectedRoute from "../auth/ProtectedRoute";
+import PublicOnlyRoute from "../auth/PublicOnlyRoute";
+import MainLayOut from "../layouts/MainLayOut";
+
+const LoginPage = lazy(() => import("../pages/login/LogInPage.jsx"));
+const HomePage = lazy(() => import("../pages/home/HomePage.jsx"));
+const CitizensPage = lazy(() => import("../pages/citizens/CitizensPages.jsx"));
+const AdminsPage = lazy(() => import("../pages/admin/AdminsPage.jsx"));
+const NotFoundPage = lazy(
+  () => import("../pages/NotFoundPage/NotFoundPage.jsx"),
+);
 
 const PageTransition = ({ children }) => {
   const location = useLocation();
@@ -28,34 +37,47 @@ const PageTransition = ({ children }) => {
   );
 };
 
+const PageLoader = () => (
+  <Center h="60vh">
+    <Spinner size="xl" color="brand.500" thickness="4px" />
+  </Center>
+);
+
+const TransitionOutlet = () => (
+  <PageTransition>
+    <Outlet />
+  </PageTransition>
+);
+
 const AppRoutes = () => {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <PageTransition>
-            <HomePage />
-          </PageTransition>
-        }
-      />
-      <Route
-        path="/citizens"
-        element={
-          <PageTransition>
-            <CitizensPage />
-          </PageTransition>
-        }
-      />
-      <Route
-        path="/admins"
-        element={
-          <PageTransition>
-            <AdminsPage />
-          </PageTransition>
-        }
-      />
-    </Routes>
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route element={<PublicOnlyRoute />}>
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute />}>
+          <Route element={<MainLayOut />}>
+            <Route element={<TransitionOutlet />}>
+              <Route index element={<HomePage />} />
+              <Route path="citizens" element={<CitizensPage />} />
+
+              <Route
+                path="admins"
+                element={
+                  <ProtectedRoute roles={["super"]}>
+                    <AdminsPage />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+          </Route>
+        </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Suspense>
   );
 };
 

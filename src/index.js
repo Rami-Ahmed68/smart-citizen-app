@@ -4,6 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider, createLocalStorageManager } from "@chakra-ui/react";
+import { AuthProvider } from "./auth/AuthContext.jsx";
+
 import { Theme } from "./components/ui/theme.jsx";
 import "./i18n.js";
 
@@ -15,9 +17,11 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <ChakraProvider theme={Theme} colorModeManager={colorModeManager}>
-        <App />
-      </ChakraProvider>
+      <AuthProvider>
+        <ChakraProvider theme={Theme} colorModeManager={colorModeManager}>
+          <App />
+        </ChakraProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );
