@@ -16,6 +16,25 @@ import api, {
 
 const AuthContext = createContext(null);
 
+// ⚠️ للتطوير فقط — احذف أو اطفئ عند ربط الـ Backend الحقيقي
+const USE_MOCK = true;
+
+const fake_admin = {
+  first_name: "أحمد",
+  last_name: "محمد",
+  email: "admin@test.com",
+  avatar: null,
+  role: "super",
+  permissions: [
+    "citizens.read",
+    "citizens.create",
+    "citizens.update",
+    "citizens.delete",
+    "admins.read",
+    "admins.create",
+  ],
+};
+
 const AUTH_EVENT_KEY = "smart-citizen-app-auth";
 const AUTH_CHANNEL_NAME = "smart-citizen-app-auth-channel";
 
@@ -25,16 +44,18 @@ export function AuthProvider({ children }) {
   const [error, setError] = useState(null);
 
   const bootstrappedRef = useRef(false);
-
   const channelRef = useRef(null);
 
   const applySession = useCallback((data) => {
     const token = data?.accessToken;
-    const adminData = data?.admin;
+    // ✅ استخدم بيانات الخادم إن وُجدت، وإلا استخدم mock (إن مفعّل)
+    const adminData = data?.admin ?? (USE_MOCK ? fake_admin : null);
 
     if (token) setAccessToken(token);
     if (adminData) setAdmin(adminData);
     setError(null);
+
+    return adminData; // ← أعد البيانات المُطبَّقة (للاستخدام في login)
   }, []);
 
   const clearSession = useCallback(() => {
@@ -48,13 +69,13 @@ export function AuthProvider({ children }) {
       setError(null);
       try {
         const { data } = await api.post("/auth/login", { email, password });
-        applySession(data);
+        const applied = applySession(data); // ← يستخدم نفس البيانات
 
         if (channelRef.current) {
           channelRef.current.postMessage({ type: "login" });
         }
 
-        return data.admin;
+        return applied; // ← متسق مع الـ state
       } catch (err) {
         const message = getErrorMessage(err, "فشل تسجيل الدخول");
         setError(message);
@@ -73,7 +94,6 @@ export function AuthProvider({ children }) {
       }
     } finally {
       clearSession();
-
       if (channelRef.current) {
         channelRef.current.postMessage({ type: "logout" });
       }
@@ -83,13 +103,14 @@ export function AuthProvider({ children }) {
   const refreshSession = useCallback(async () => {
     try {
       const { data } = await api.post("/auth/refresh");
-      applySession(data);
-      return data.admin;
+      return applySession(data); // ← متسق
     } catch (err) {
       clearSession();
       throw err;
     }
   }, [applySession, clearSession]);
+
+  // ... (باقي useEffect كما هي، لا تغيير)
 
   useEffect(() => {
     if (bootstrappedRef.current) return;
@@ -102,7 +123,7 @@ export function AuthProvider({ children }) {
       } catch {
         clearSession();
       } finally {
-        setIsLoading(false); // ← دائمًا، بدون شرط cancelled
+        setIsLoading(false);
       }
     };
 
@@ -111,13 +132,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    setUnauthorizedHandler(() => {
-      clearSession();
-    });
-
-    return () => {
-      setUnauthorizedHandler(null);
-    };
+    setUnauthorizedHandler(() => clearSession());
+    return () => setUnauthorizedHandler(null);
   }, [clearSession]);
 
   useEffect(() => {
@@ -127,9 +143,8 @@ export function AuthProvider({ children }) {
 
       channel.onmessage = (event) => {
         const type = event?.data?.type;
-        if (type === "logout") {
-          clearSession();
-        } else if (type === "login") {
+        if (type === "logout") clearSession();
+        else if (type === "login") {
           api.post("/auth/refresh").then(
             ({ data }) => applySession(data),
             () => clearSession(),
@@ -145,12 +160,10 @@ export function AuthProvider({ children }) {
 
     const handleStorage = (event) => {
       if (event.key !== AUTH_EVENT_KEY || !event.newValue) return;
-
       try {
         const payload = JSON.parse(event.newValue);
-        if (payload.type === "logout") {
-          clearSession();
-        } else if (payload.type === "login") {
+        if (payload.type === "logout") clearSession();
+        else if (payload.type === "login") {
           api.post("/auth/refresh").then(
             ({ data }) => applySession(data),
             () => clearSession(),
@@ -163,6 +176,26 @@ export function AuthProvider({ children }) {
     return () => window.removeEventListener("storage", handleStorage);
   }, [applySession, clearSession]);
 
+  // ✅ أضف helpers للصلاحيات
+  const hasPermission = useCallback(
+    (permission) => !!admin?.permissions?.includes(permission),
+    [admin],
+  );
+
+  const hasAnyPermission = useCallback(
+    (permissions = []) =>
+      Array.isArray(permissions) &&
+      permissions.some((p) => admin?.permissions?.includes(p)),
+    [admin],
+  );
+
+  const hasAllPermissions = useCallback(
+    (permissions = []) =>
+      Array.isArray(permissions) &&
+      permissions.every((p) => admin?.permissions?.includes(p)),
+    [admin],
+  );
+
   const value = useMemo(
     () => ({
       admin,
@@ -174,11 +207,27 @@ export function AuthProvider({ children }) {
       logout,
       refreshSession,
 
+      // أدوار
       hasRole: (role) => admin?.role === role,
       hasAnyRole: (roles = []) =>
         !!admin && Array.isArray(roles) && roles.includes(admin.role),
+
+      // صلاحيات
+      hasPermission,
+      hasAnyPermission,
+      hasAllPermissions,
     }),
-    [admin, isLoading, error, login, logout, refreshSession],
+    [
+      admin,
+      isLoading,
+      error,
+      login,
+      logout,
+      refreshSession,
+      hasPermission,
+      hasAnyPermission,
+      hasAllPermissions,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -186,9 +235,7 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error("useAuth must be used inside <AuthProvider>");
-  }
+  if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
   return ctx;
 }
 

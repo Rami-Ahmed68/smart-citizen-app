@@ -1,6 +1,7 @@
 // src/i18n/translations/ar.js
 import navbar from "./arabic/navbar";
 import sidbar from "./arabic/sidbar";
+import auth from "./arabic/auth";
 // import settings from "./arabic/settings";
 // import common from "./arabic/common";
 // import citizens from "./arabic/citizens";
@@ -10,6 +11,7 @@ import sidbar from "./arabic/sidbar";
 const ar = {
   navbar,
   sidbar,
+  auth,
   //   settings,
   //   common,
   //   citizens,

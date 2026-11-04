@@ -11,6 +11,7 @@ import {
   HStack,
   Icon,
   IconButton,
+  Image,
   Input,
   InputGroup,
   InputLeftElement,
@@ -20,19 +21,17 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { LuMail, LuLock, LuEye, LuEyeOff, LuShield } from "react-icons/lu";
+import { LuMail, LuLock, LuEye, LuEyeOff } from "react-icons/lu";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../auth/AuthContext";
 import { getErrorMessage } from "../../api/axios";
-
-const GOLD = "#c9a961";
-const NAVY = "#0a1628";
-const NAVY_MID = "#12294d";
-const NAVY_LIGHT = "#1e3a5f";
+import { getTodayISO } from "../../utils/date";
+import logo from "../../assets/new_syrian_logo.png";
 
 export default function LoginPage() {
   const { t } = useTranslation();
+
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -66,19 +65,17 @@ export default function LoginPage() {
   };
 
   return (
-    <Flex minH="100vh" bg="bg-body">
-      {/* ═══════════════ الشريط الحكومي (شاشات كبيرة فقط) ═══════════════ */}
+    <Flex minH="100vh">
       <Box
         flex="1"
         display={{ base: "none", lg: "flex" }}
-        bgGradient={`linear(135deg, ${NAVY} 0%, ${NAVY_MID} 55%, ${NAVY_LIGHT} 100%)`}
+        bg="syria.green.dark"
         color="white"
         position="relative"
         overflow="hidden"
         alignItems="center"
         justifyContent="center"
         p={12}>
-        {/* نمط قُطري خفيف */}
         <Box
           position="absolute"
           inset="0"
@@ -87,7 +84,6 @@ export default function LoginPage() {
           pointerEvents="none"
         />
 
-        {/* توهجات زخرفية */}
         <Box
           position="absolute"
           top="-25%"
@@ -117,41 +113,48 @@ export default function LoginPage() {
           position="relative"
           zIndex={1}
           textAlign="center">
-          {/* ختم مؤسسي */}
           <Box position="relative">
             <Box
-              w="128px"
-              h="128px"
+              w="140px"
+              h="140px"
               borderRadius="full"
               border="2px solid"
-              borderColor={GOLD}
+              borderColor="syria.wheat.dark"
               display="flex"
               alignItems="center"
               justifyContent="center"
               bg="whiteAlpha.100"
-              backdropFilter="blur(12px)">
-              <Icon as={LuShield} boxSize={14} color={GOLD} strokeWidth={1.5} />
+              backdropFilter="blur(12px)"
+              p={6}>
+              <Image
+                src={logo}
+                alt="Syrian Arab Republic Emblem"
+                w="100%"
+                h="100%"
+                objectFit="contain"
+                filter="drop-shadow(0 2px 8px rgba(0,0,0,0.35))"
+              />
             </Box>
             <Box
               position="absolute"
               inset="-14px"
               borderRadius="full"
               border="1px solid"
-              borderColor={`${GOLD}40`}
+              borderColor="syria.wheat.dark"
+              opacity={0.4}
             />
           </Box>
 
-          {/* فاصل ذهبي مع نقش */}
           <HStack spacing={3} w="100%" justify="center">
             <Box
               h="1px"
               flex="1"
-              bgGradient="linear(to-r, transparent, #c9a961)"
+              bgGradient="linear(to-r, transparent, syria.wheat.mid)"
             />
             <Text
               fontSize="2xs"
               letterSpacing="0.4em"
-              color={GOLD}
+              color="syria.wheat.mid"
               textTransform="uppercase"
               fontWeight="semibold">
               Secure Portal
@@ -159,27 +162,26 @@ export default function LoginPage() {
             <Box
               h="1px"
               flex="1"
-              bgGradient="linear(to-l, transparent, #c9a961)"
+              bgGradient="linear(to-l, transparent, syria.wheat.mid)"
             />
           </HStack>
 
-          {/* اسم المنصة */}
           <VStack spacing={3}>
             <Text
-              fontSize="3xl"
+              fontSize="4xl"
               fontWeight="bold"
               letterSpacing="0.12em"
               fontFamily="Georgia, 'Times New Roman', serif"
               textTransform="uppercase"
               lineHeight="shorter">
-              Smart Citizen
+              {t("auth.brandName")}
             </Text>
             <Text
               fontSize="xs"
               letterSpacing="0.3em"
               color="whiteAlpha.700"
               textTransform="uppercase">
-              National Administrative Platform
+              {t("auth.brandTagline")}
             </Text>
           </VStack>
 
@@ -189,8 +191,7 @@ export default function LoginPage() {
             lineHeight="tall"
             maxW="360px"
             fontWeight="300">
-            منصة إدارة المواطنين الذكية — نظام حكومي آمن ومعتمد للوصول إلى
-            بيانات المواطنين وإدارة الطلبات والخدمات.
+            {t("auth.heroDescription")}
           </Text>
 
           <VStack spacing={2}>
@@ -200,64 +201,61 @@ export default function LoginPage() {
               color="whiteAlpha.500"
               letterSpacing="0.15em"
               textTransform="uppercase">
-              © 2026 Smart Citizen · All Rights Reserved
+              {t("auth.copyright")} {getTodayISO()}
             </Text>
           </VStack>
         </VStack>
       </Box>
 
-      {/* ═══════════════ قسم النموذج (بلا بوردر) ═══════════════ */}
-      <Flex
-        flex="1"
-        align="center"
-        justify="center"
-        p={{ base: 6, md: 12 }}
-        bg="bg-body">
-        <Box w="100%" maxW="400px">
+      <Flex flex="1" align="center" justify="center" p={{ base: 6, md: 12 }}>
+        <Box w="100%" maxW="420px">
           <VStack spacing={8} align="stretch">
-            {/* شعار الجوال */}
             <VStack
               spacing={3}
               display={{ base: "flex", lg: "none" }}
               align="center"
               pt={4}>
               <Box
-                w="80px"
-                h="80px"
+                w="96px"
+                h="96px"
                 borderRadius="full"
                 border="2px solid"
-                borderColor="brand.500"
+                borderColor="syria.green.mid"
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                bg="brand.50"
-                _dark={{ bg: "brand.900", borderColor: "brand.400" }}>
-                <Icon
-                  as={LuShield}
-                  boxSize={9}
-                  color="brand.500"
-                  _dark={{ color: "brand.300" }}
-                  strokeWidth={1.5}
+                bg="syria.green.dark"
+                p={4}
+                _dark={{
+                  bg: "whiteAlpha.100",
+                  borderColor: "syria.wheat.mid",
+                }}>
+                <Image
+                  src={logo}
+                  alt="Syrian Arab Republic Emblem"
+                  w="100%"
+                  h="100%"
+                  objectFit="contain"
                 />
               </Box>
               <Text
-                fontSize="lg"
+                fontSize="xl"
                 fontWeight="bold"
                 letterSpacing="0.15em"
                 textTransform="uppercase"
-                fontFamily="Georgia, 'Times New Roman', serif">
-                Smart Citizen
+                fontFamily="Georgia, 'Times New Roman', serif"
+                color="text-primary">
+                {t("auth.brandName")}
               </Text>
               <Text
                 fontSize="2xs"
                 letterSpacing="0.25em"
                 color="text-muted"
                 textTransform="uppercase">
-                Secure Administrative Portal
+                {t("auth.brandTagline")}
               </Text>
             </VStack>
 
-            {/* العنوان */}
             <VStack spacing={1} align="start">
               <Heading
                 size="lg"
@@ -271,7 +269,6 @@ export default function LoginPage() {
               </Text>
             </VStack>
 
-            {/* النموذج */}
             <form onSubmit={handleSubmit}>
               <Stack spacing={5}>
                 <FormControl isRequired>
@@ -285,7 +282,7 @@ export default function LoginPage() {
                   </FormLabel>
                   <InputGroup size="lg">
                     <InputLeftElement pointerEvents="none">
-                      <Icon as={LuMail} color="text-muted" boxSize={4.5} />
+                      <Icon as={LuMail} color="text-muted" boxSize={5} />
                     </InputLeftElement>
                     <Input
                       type="email"
@@ -296,6 +293,8 @@ export default function LoginPage() {
                       autoFocus
                       bg="bg-input"
                       borderRadius="lg"
+                      fontSize="md"
+                      h="52px"
                       _focusVisible={{
                         borderColor: "brand.500",
                         boxShadow: "0 0 0 1px var(--chakra-colors-brand-500)",
@@ -315,7 +314,7 @@ export default function LoginPage() {
                   </FormLabel>
                   <InputGroup size="lg">
                     <InputLeftElement pointerEvents="none">
-                      <Icon as={LuLock} color="text-muted" boxSize={4.5} />
+                      <Icon as={LuLock} color="text-muted" boxSize={5} />
                     </InputLeftElement>
                     <Input
                       type={showPassword ? "text" : "password"}
@@ -325,12 +324,14 @@ export default function LoginPage() {
                       autoComplete="current-password"
                       bg="bg-input"
                       borderRadius="lg"
+                      fontSize="md"
+                      h="52px"
                       _focusVisible={{
                         borderColor: "brand.500",
                         boxShadow: "0 0 0 1px var(--chakra-colors-brand-500)",
                       }}
                     />
-                    <InputRightElement h="full">
+                    <InputRightElement h="full" w="52px">
                       <IconButton
                         aria-label={
                           showPassword
@@ -339,7 +340,7 @@ export default function LoginPage() {
                         }
                         icon={showPassword ? <LuEyeOff /> : <LuEye />}
                         variant="ghost"
-                        size="sm"
+                        size="md"
                         color="text-muted"
                         onClick={() => setShowPassword((s) => !s)}
                       />
@@ -352,36 +353,45 @@ export default function LoginPage() {
                   size="lg"
                   w="100%"
                   mt={2}
-                  bgGradient={`linear(to-r, ${NAVY_MID}, ${NAVY_LIGHT})`}
+                  h="52px"
+                  bg="syria.green.mid"
                   color="white"
                   _hover={{
-                    bgGradient: `linear(to-r, ${NAVY}, ${NAVY_MID})`,
+                    bg: "syria.green.dark",
                     transform: "translateY(-1px)",
                     boxShadow: "lg",
                   }}
-                  _active={{ transform: "translateY(0)" }}
+                  _active={{
+                    bg: "syria.green.dark",
+                    transform: "translateY(0)",
+                  }}
                   isLoading={isSubmitting}
                   loadingText={t("auth.signingIn")}
                   isDisabled={!email || !password}
                   letterSpacing="0.05em"
                   fontWeight="semibold"
+                  fontSize="md"
                   transition="all 0.2s">
                   {t("auth.signIn")}
                 </Button>
               </Stack>
             </form>
 
-            <Divider />
+            <Divider borderColor="border-color" />
 
-            {/* مؤشر الأمان */}
             <HStack
               spacing={2}
               justify="center"
               fontSize="2xs"
               color="text-muted"
               letterSpacing="0.05em">
-              <Icon as={LuShield} boxSize={3} />
-              <Text>محمي بتشفير TLS 1.3 · جميع المحاولات مسجلة</Text>
+              <Text
+                fontSize="2xs"
+                color="whiteAlpha.500"
+                letterSpacing="0.15em"
+                textTransform="uppercase">
+                {t("auth.copyright")} {getTodayISO()}
+              </Text>
             </HStack>
           </VStack>
         </Box>

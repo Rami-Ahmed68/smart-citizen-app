@@ -7,6 +7,29 @@ export const Theme = extendTheme({
   },
 
   colors: {
+    syria: {
+      green: {
+        light: "#428177",
+        mid: "#054239",
+        dark: "#002623",
+      },
+      wheat: {
+        light: "#edebe0",
+        mid: "#b9a779",
+        dark: "#988561",
+      },
+      umber: {
+        light: "#6b1f2a",
+        mid: "#4a151e",
+        dark: "#260f14",
+      },
+      charcoal: {
+        light: "#ffffff",
+        mid: "#3d3a3b",
+        dark: "#161616",
+      },
+    },
+
     primary: {
       50: "#e6f3ff",
       100: "#cce7ff",
@@ -143,21 +166,26 @@ export const Theme = extendTheme({
   semanticTokens: {
     colors: {
       "bg-body": {
-        default: "#edecec",
-        _dark: "#1d1d1d",
+        default: "#ececec",
+        _dark: "#181818",
       },
       "bg-sidbar": {
-        default: "#c8c8c8",
-        _dark: "#111111",
+        default: "#fdfdfd",
+        _dark: "#030303",
       },
       "nav-bar": {
-        default: "#c8c8c8",
-        _dark: "#111111",
+        default: "#f9f9f9",
+        _dark: "#030303",
       },
 
       "icon-btn": {
         default: "#b2b2b2c9",
         _dark: "#2f2f2fb4",
+      },
+
+      "bg-input": {
+        default: "#e0e0e0",
+        _dark: "#1c1c1c",
       },
     },
   },

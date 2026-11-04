@@ -1,6 +1,7 @@
 // src/i18n/translations/en.js
 import navbar from "./english/navbar";
 import sidbar from "./english/sidbar";
+import auth from "./english/auth";
 // import settings from "./english/settings";
 // import common from "./english/common";
 // import citizens from "./english/citizens";
@@ -10,6 +11,7 @@ import sidbar from "./english/sidbar";
 const en = {
   navbar,
   sidbar,
+  auth,
   //   settings,
   //   common,
   //   citizens,

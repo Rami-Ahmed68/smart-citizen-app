@@ -7,15 +7,14 @@ import {
   HStack,
   Menu,
   MenuButton,
-  MenuList,
-  MenuItem,
   Text,
   IconButton,
   Box,
 } from "@chakra-ui/react";
-import { LuMenu, LuLogOut } from "react-icons/lu";
+import { LuMenu } from "react-icons/lu";
 import ToggleTheme from "./ToggleTheme.jsx";
 import ToggleLang from "./ToggleLang.jsx";
+import { useTranslation } from "react-i18next";
 
 export default function Navbar({
   admin,
@@ -24,6 +23,8 @@ export default function Navbar({
   lang,
   onToggleLang,
 }) {
+  const { t } = useTranslation();
+
   const fullName = admin ? `${admin.first_name} ${admin.last_name}` : "";
 
   return (
@@ -38,7 +39,7 @@ export default function Navbar({
           display={{ base: "inline-flex", md: "none" }}
         />
         <Heading size="md" color="brand.500">
-          Smart Citizen
+          {t("navbar.brand")}
         </Heading>
       </HStack>
 
@@ -67,11 +68,6 @@ export default function Navbar({
                 </Badge>
               </HStack>
             </MenuButton>
-            <MenuList>
-              <MenuItem icon={<LuLogOut />} color="red.500" onClick={onLogout}>
-                تسجيل الخروج
-              </MenuItem>
-            </MenuList>
           </Menu>
         )}
       </HStack>

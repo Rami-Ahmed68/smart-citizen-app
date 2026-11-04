@@ -5,6 +5,7 @@ import { useAuth } from "./AuthContext";
 
 export default function ProtectedRoute({ children, roles }) {
   const { isAuthenticated, isLoading, hasAnyRole } = useAuth();
+
   const location = useLocation();
 
   if (isLoading) {
@@ -18,9 +19,9 @@ export default function ProtectedRoute({ children, roles }) {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" state={{ from: location }} replace />;
+  // }
 
   if (roles && !hasAnyRole(roles)) {
     return <Navigate to="/" replace />;
