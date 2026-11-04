@@ -2,7 +2,9 @@
 import navbar from "./arabic/navbar";
 import sidbar from "./arabic/sidbar";
 import auth from "./arabic/auth";
-import toast from "./english/toast";
+import toast from "./arabic/toast";
+import logout from "./arabic/logOut";
+import addAdmin from "./arabic/addAdmin";
 // import settings from "./arabic/settings";
 // import common from "./arabic/common";
 // import citizens from "./arabic/citizens";
@@ -14,6 +16,8 @@ const ar = {
   sidbar,
   auth,
   toast,
+  logout,
+  addAdmin,
   //   settings,
   //   common,
   //   citizens,

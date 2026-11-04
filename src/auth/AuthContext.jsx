@@ -53,6 +53,19 @@ export function AuthProvider({ children }) {
     },
     [saveAdmin],
   );
+
+  // ✅ أداة محايدة: امسح الحالة المحلية فقط (لا طلب شبكة)
+  const clearSession = useCallback(() => {
+    setAccessToken(null);
+    saveAdmin(null);
+  }, [saveAdmin]);
+
+  // ✅ ربط معالج 401 — هنا نمسح تلقائيًا لأن الخادم رفض التوكن
+  useEffect(() => {
+    setUnauthorizedHandler(clearSession);
+    return () => setUnauthorizedHandler(null);
+  }, [clearSession]);
+
   const value = useMemo(
     () => ({
       admin,
@@ -60,6 +73,7 @@ export function AuthProvider({ children }) {
       isLoading: false,
 
       login,
+      clearSession, // ← للاستخدام من LogoutPage (بعد نجاح الخادم)
 
       hasRole: (role) => admin?.role === role,
       hasAnyRole: (roles = []) => !!admin && roles.includes(admin.role),
@@ -69,7 +83,7 @@ export function AuthProvider({ children }) {
       hasAllPermissions: (perms = []) =>
         !!admin && perms.every((p) => admin.permissions.includes(p)),
     }),
-    [admin, login],
+    [admin, login, clearSession],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

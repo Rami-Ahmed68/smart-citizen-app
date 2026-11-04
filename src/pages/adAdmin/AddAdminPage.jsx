@@ -43,71 +43,6 @@ import { useAuth } from "../../auth/AuthContext";
 import { adminsAPI } from "../../api/admins.api";
 import { useAppToast } from "../../components/common/AppToast";
 
-const labels = {
-  ar: {
-    pageTitle: "إضافة مسؤول جديد",
-    pageSubtitle: "إنشاء حساب مسؤول جديد",
-    sectionPersonal: "المعلومات الشخصية",
-    sectionAccount: "بيانات الحساب",
-    firstName: "الاسم الأول",
-    lastName: "اسم العائلة",
-    email: "البريد الإلكتروني",
-    password: "كلمة المرور",
-    confirmPassword: "تأكيد كلمة المرور",
-    phone: "رقم الهاتف",
-    birthDate: "تاريخ الميلاد",
-    gender: "الجنس",
-    male: "ذكر",
-    female: "أنثى",
-    save: "إنشاء الحساب",
-    saving: "جارٍ الإنشاء...",
-    cancel: "إلغاء",
-    showPassword: "إظهار كلمة المرور",
-    hidePassword: "إخفاء كلمة المرور",
-    successTitle: "تم إنشاء الحساب",
-    successDesc: "تمت إضافة المسؤول الجديد بنجاح",
-    passwordMismatch: "كلمتا المرور غير متطابقتين",
-    passShort: "٨ أحرف على الأقل",
-    phoneHint: "أرقام فقط، مع + اختيارية في البداية (٧–١٥ رقمًا)",
-    infoNote:
-      "سيُنشأ الحساب بدور «مسؤول» وحالة نشطة، مع صلاحية قراءة افتراضية. تُعيَّن الصورة تلقائيًا حسب الجنس.",
-    youAre: "أنت",
-    roleAdmin: "مسؤول",
-    roleSuper: "مسؤول أعلى",
-  },
-  en: {
-    pageTitle: "Add New Admin",
-    pageSubtitle: "Create a new admin account",
-    sectionPersonal: "Personal Information",
-    sectionAccount: "Account Details",
-    firstName: "First Name",
-    lastName: "Last Name",
-    email: "Email",
-    password: "Password",
-    confirmPassword: "Confirm Password",
-    phone: "Phone Number",
-    birthDate: "Birth Date",
-    gender: "Gender",
-    male: "Male",
-    female: "Female",
-    save: "Create Account",
-    saving: "Creating...",
-    cancel: "Cancel",
-    showPassword: "Show password",
-    hidePassword: "Hide password",
-    successTitle: "Account created",
-    successDesc: "New admin added successfully",
-    passwordMismatch: "Passwords do not match",
-    passShort: "At least 8 characters",
-    phoneHint: "Digits only, optional leading + (7–15 digits)",
-    infoNote:
-      "Account will be created with role 'admin', active status, default 'read' permission. Avatar auto-assigned by gender.",
-    youAre: "You are",
-    roleAdmin: "Admin",
-    roleSuper: "Super Admin",
-  },
-};
-
 const FIELD_MAX = {
   first_name: 50,
   last_name: 50,
@@ -118,8 +53,8 @@ const FIELD_MAX = {
 };
 
 const ROLE_BADGE = {
-  super: { colorScheme: "purple", labelKey: "roleSuper" },
-  admin: { colorScheme: "blue", labelKey: "roleAdmin" },
+  super: { colorScheme: "purple", labelKey: "addAdmin.roleSuper" },
+  admin: { colorScheme: "blue", labelKey: "addAdmin.roleAdmin" },
 };
 
 function Card({ children, p }) {
@@ -190,13 +125,10 @@ function LabelWithCounter({ label, current = "", max }) {
 }
 
 export default function AddAdminPage() {
-  const { i18n } = useTranslation();
+  const { t } = useTranslation();
   const { admin: currentAdmin } = useAuth();
   const appToast = useAppToast();
   const navigate = useNavigate();
-
-  const lang = i18n.language === "ar" ? "ar" : "en";
-  const L = labels[lang];
 
   const [form, setForm] = useState({
     first_name: "",
@@ -226,17 +158,12 @@ export default function AddAdminPage() {
     e.preventDefault();
     if (isSubmitting) return;
 
-    console.log("🔍 birth_date value:", form.birth_date);
-    console.log("🔍 typeof:", typeof form.birth_date);
-    console.log("🔍 JSON:", JSON.stringify(form.birth_date));
-    console.log("🔍 length:", form.birth_date?.length);
-
     if (form.password !== form.confirmPassword) {
-      appToast.error(L.passwordMismatch);
+      appToast.error(t("addAdmin.passwordMismatch"));
       return;
     }
     if (form.password.length < 8) {
-      appToast.error(L.passShort);
+      appToast.error(t("addAdmin.passShort"));
       return;
     }
 
@@ -253,7 +180,7 @@ export default function AddAdminPage() {
       };
 
       await adminsAPI.create(payload);
-      appToast.success(L.successTitle, L.successDesc);
+      appToast.success(t("addAdmin.successTitle"), t("addAdmin.successDesc"));
       navigate("/admins", { replace: true });
     } catch (err) {
       appToast.error(err);
@@ -299,7 +226,7 @@ export default function AddAdminPage() {
         <VStack align="start" spacing={0.5} flex="1">
           <HStack spacing={2} wrap="wrap">
             <Heading size="md" color="text-primary">
-              {L.pageTitle}
+              {t("addAdmin.pageTitle")}
             </Heading>
             <Badge
               colorScheme={currentRoleBadge.colorScheme}
@@ -310,11 +237,11 @@ export default function AddAdminPage() {
               py={0.5}
               fontWeight="semibold"
               textTransform="none">
-              {L.youAre}: {L[currentRoleBadge.labelKey]}
+              {t("addAdmin.youAre")}: {t(currentRoleBadge.labelKey)}
             </Badge>
           </HStack>
           <Text fontSize="xs" color="text-muted">
-            {L.pageSubtitle}
+            {t("addAdmin.pageSubtitle")}
           </Text>
         </VStack>
       </Flex>
@@ -326,14 +253,19 @@ export default function AddAdminPage() {
         variant="left-accent"
         fontSize="sm">
         <AlertIcon boxSize={4} />
-        <AlertDescription fontSize="xs">{L.infoNote}</AlertDescription>
+        <AlertDescription fontSize="xs">
+          {t("addAdmin.infoNote")}
+        </AlertDescription>
       </Alert>
 
       <form onSubmit={handleSubmit}>
         <VStack align="stretch" spacing={4}>
           {/* ═══ 1. Personal ═══ */}
           <Card>
-            <SectionHeader icon={LuUser} title={L.sectionPersonal} />
+            <SectionHeader
+              icon={LuUser}
+              title={t("addAdmin.sectionPersonal")}
+            />
 
             <Grid
               templateColumns={{
@@ -344,7 +276,7 @@ export default function AddAdminPage() {
               gap={4}>
               <FormControl isRequired>
                 <LabelWithCounter
-                  label={L.firstName}
+                  label={t("addAdmin.firstName")}
                   current={form.first_name}
                   max={FIELD_MAX.first_name}
                 />
@@ -352,7 +284,7 @@ export default function AddAdminPage() {
                   size="sm"
                   value={form.first_name}
                   onChange={(e) => set("first_name", e.target.value)}
-                  placeholder="أحمد"
+                  placeholder={t("addAdmin.firstNamePlaceholder")}
                   minLength={2}
                   maxLength={FIELD_MAX.first_name}
                 />
@@ -360,7 +292,7 @@ export default function AddAdminPage() {
 
               <FormControl isRequired>
                 <LabelWithCounter
-                  label={L.lastName}
+                  label={t("addAdmin.lastName")}
                   current={form.last_name}
                   max={FIELD_MAX.last_name}
                 />
@@ -368,7 +300,7 @@ export default function AddAdminPage() {
                   size="sm"
                   value={form.last_name}
                   onChange={(e) => set("last_name", e.target.value)}
-                  placeholder="محمد"
+                  placeholder={t("addAdmin.lastNamePlaceholder")}
                   minLength={2}
                   maxLength={FIELD_MAX.last_name}
                 />
@@ -376,7 +308,7 @@ export default function AddAdminPage() {
 
               <FormControl isRequired>
                 <LabelWithCounter
-                  label={L.phone}
+                  label={t("addAdmin.phone")}
                   current={form.phone_number}
                   max={FIELD_MAX.phone_number}
                 />
@@ -388,13 +320,13 @@ export default function AddAdminPage() {
                     type="tel"
                     value={form.phone_number}
                     onChange={handlePhoneChange}
-                    placeholder="+963912345678"
+                    placeholder={t("addAdmin.phonePlaceholder")}
                     maxLength={FIELD_MAX.phone_number}
                     pattern="^\+?[0-9]{7,15}$"
                   />
                 </InputGroup>
                 <FormHelperText fontSize="2xs" mt={1}>
-                  {L.phoneHint}
+                  {t("addAdmin.phoneHint")}
                 </FormHelperText>
               </FormControl>
 
@@ -404,7 +336,7 @@ export default function AddAdminPage() {
                   fontWeight="semibold"
                   mb={1}
                   color="text-secondary">
-                  {L.birthDate}
+                  {t("addAdmin.birthDate")}
                 </FormLabel>
                 <InputGroup size="sm">
                   <InputLeftElement pointerEvents="none" zIndex={1}>
@@ -445,17 +377,17 @@ export default function AddAdminPage() {
                     fontWeight="semibold"
                     mb={1}
                     color="text-secondary">
-                    {L.gender}
+                    {t("addAdmin.gender")}
                   </FormLabel>
                   <RadioGroup
                     value={form.gender}
                     onChange={(v) => set("gender", v)}>
                     <HStack spacing={5}>
                       <Radio value="male" colorScheme="blue" size="sm">
-                        {L.male}
+                        {t("addAdmin.male")}
                       </Radio>
                       <Radio value="female" colorScheme="pink" size="sm">
-                        {L.female}
+                        {t("addAdmin.female")}
                       </Radio>
                     </HStack>
                   </RadioGroup>
@@ -466,13 +398,13 @@ export default function AddAdminPage() {
 
           {/* ═══ 2. Account ═══ */}
           <Card>
-            <SectionHeader icon={LuMail} title={L.sectionAccount} />
+            <SectionHeader icon={LuMail} title={t("addAdmin.sectionAccount")} />
 
             <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4}>
               <GridItem colSpan={{ base: 1, md: 2 }}>
                 <FormControl isRequired>
                   <LabelWithCounter
-                    label={L.email}
+                    label={t("addAdmin.email")}
                     current={form.email}
                     max={FIELD_MAX.email}
                   />
@@ -484,7 +416,7 @@ export default function AddAdminPage() {
                       type="email"
                       value={form.email}
                       onChange={(e) => set("email", e.target.value)}
-                      placeholder="admin@example.com"
+                      placeholder={t("addAdmin.emailPlaceholder")}
                       autoComplete="email"
                       maxLength={FIELD_MAX.email}
                     />
@@ -494,7 +426,7 @@ export default function AddAdminPage() {
 
               <FormControl isRequired>
                 <LabelWithCounter
-                  label={L.password}
+                  label={t("addAdmin.password")}
                   current={form.password}
                   max={FIELD_MAX.password}
                 />
@@ -506,7 +438,7 @@ export default function AddAdminPage() {
                     type={showPassword ? "text" : "password"}
                     value={form.password}
                     onChange={(e) => set("password", e.target.value)}
-                    placeholder="••••••••"
+                    placeholder={t("addAdmin.passwordPlaceholder")}
                     autoComplete="new-password"
                     maxLength={FIELD_MAX.password}
                   />
@@ -516,7 +448,9 @@ export default function AddAdminPage() {
                       size="xs"
                       variant="ghost"
                       aria-label={
-                        showPassword ? L.hidePassword : L.showPassword
+                        showPassword
+                          ? t("addAdmin.hidePassword")
+                          : t("addAdmin.showPassword")
                       }
                       icon={showPassword ? <LuEyeOff /> : <LuEye />}
                       onClick={() => setShowPassword((s) => !s)}
@@ -524,13 +458,13 @@ export default function AddAdminPage() {
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText fontSize="2xs" mt={1}>
-                  {L.passShort}
+                  {t("addAdmin.passShort")}
                 </FormHelperText>
               </FormControl>
 
               <FormControl isRequired>
                 <LabelWithCounter
-                  label={L.confirmPassword}
+                  label={t("addAdmin.confirmPassword")}
                   current={form.confirmPassword}
                   max={FIELD_MAX.confirmPassword}
                 />
@@ -542,7 +476,7 @@ export default function AddAdminPage() {
                     type={showPassword ? "text" : "password"}
                     value={form.confirmPassword}
                     onChange={(e) => set("confirmPassword", e.target.value)}
-                    placeholder="••••••••"
+                    placeholder={t("addAdmin.passwordPlaceholder")}
                     autoComplete="new-password"
                     maxLength={FIELD_MAX.confirmPassword}
                   />
@@ -550,7 +484,7 @@ export default function AddAdminPage() {
                 {form.confirmPassword &&
                   form.password !== form.confirmPassword && (
                     <FormHelperText color="red.500" fontSize="2xs" mt={1}>
-                      {L.passwordMismatch}
+                      {t("addAdmin.passwordMismatch")}
                     </FormHelperText>
                   )}
               </FormControl>
@@ -572,7 +506,7 @@ export default function AddAdminPage() {
               onClick={() => navigate(-1)}
               isDisabled={isSubmitting}
               minW={{ base: "full", sm: "auto" }}>
-              {L.cancel}
+              {t("addAdmin.cancel")}
             </Button>
             <Button
               type="submit"
@@ -580,9 +514,9 @@ export default function AddAdminPage() {
               colorScheme="green"
               rightIcon={<LuArrowRight size={14} />}
               isLoading={isSubmitting}
-              loadingText={L.saving}
+              loadingText={t("addAdmin.saving")}
               minW={{ base: "full", sm: "auto" }}>
-              {L.save}
+              {t("addAdmin.save")}
             </Button>
           </Flex>
         </VStack>

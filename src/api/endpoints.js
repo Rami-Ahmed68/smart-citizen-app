@@ -6,7 +6,7 @@ export const ENDPOINTS = {
   // ═══════════════════════════════════════════
   auth: {
     login: "/admin/auth/log-in",
-    logout: "/admin/asuth/log-out",
+    logout: "/admin/auth/log-out",
     refresh: "/admin/auth/refresh",
     forgotPassword: "/admin/auth/forgot-password",
     resetPassword: "/admin/auth/reset-password",

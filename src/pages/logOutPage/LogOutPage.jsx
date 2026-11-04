@@ -42,78 +42,10 @@ import { authAPI } from "../../api/auth";
 import { useAppToast } from "../../components/common/AppToast";
 import { formatDateTimeNumeric } from "../../utils/date";
 
-const labels = {
-  ar: {
-    pageTitle: "تسجيل الخروج",
-    pageSubtitle: "إنهاء الجلسة الحالية بأمان",
-    youAre: "أنت",
-    roleSuper: "مسؤول أعلى",
-    roleAdmin: "مسؤول",
-    roleUser: "مستخدم",
-    sectionSession: "معلومات الجلسة",
-    sectionWarning: "تنبيه أمني",
-    userLabel: "المستخدم الحالي",
-    roleLabel: "الدور",
-    deviceLabel: "الجهاز",
-    deviceValue: "المتصفح الحالي",
-    timeLabel: "الوقت الحالي",
-    securityLabel: "حالة الأمان",
-    securityValue: "نشطة · مشفّرة",
-    sessionLabel: "رقم الجلسة",
-    warningText:
-      "سيتم إنهاء جلستك على هذا المتصفح. أي بيانات غير محفوظة ستفقد. ستحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى لوحة التحكم.",
-    save: "تسجيل الخروج",
-    cancel: "البقاء في الصفحة",
-    dialogTitle: "تأكيد تسجيل الخروج",
-    dialogBody:
-      "سيتم إنهاء جلستك على هذا الجهاز نهائيًا. ستحتاج إلى تسجيل الدخول مرة أخرى للمتابعة.",
-    dialogConfirm: "نعم، سجّل الخروج",
-    dialogCancel: "إلغاء",
-    checkboxLabel:
-      "أفهم أن جلستي الحالية ستنتهي، وأن أي بيانات غير محفوظة ستفقد.",
-    signingOut: "جارٍ تسجيل الخروج...",
-    successToast: "تم تسجيل الخروج بنجاح",
-    errorToast: "تعذر تسجيل الخروج، تم إنهاء الجلسة محليًا",
-    close: "إغلاق",
-  },
-  en: {
-    pageTitle: "Sign Out",
-    pageSubtitle: "End your current session securely",
-    youAre: "You are",
-    roleSuper: "Super Admin",
-    roleAdmin: "Admin",
-    roleUser: "User",
-    sectionSession: "Session Information",
-    sectionWarning: "Security Notice",
-    userLabel: "Current User",
-    roleLabel: "Role",
-    deviceLabel: "Device",
-    deviceValue: "Current Browser",
-    timeLabel: "Current Time",
-    securityLabel: "Security Status",
-    securityValue: "Active · Encrypted",
-    sessionLabel: "Session ID",
-    warningText:
-      "Your session on this browser will be ended. Any unsaved data will be lost. You will need to sign in again to access the dashboard.",
-    save: "Sign Out",
-    cancel: "Stay on Page",
-    dialogTitle: "Confirm Sign Out",
-    dialogBody:
-      "Your session on this device will be ended permanently. You will need to sign in again to continue.",
-    dialogConfirm: "Yes, sign out",
-    dialogCancel: "Cancel",
-    checkboxLabel:
-      "I understand that my current session will end and any unsaved data will be lost.",
-    signingOut: "Signing out...",
-    successToast: "Signed out successfully",
-    errorToast: "Sign out failed, session cleared locally",
-    close: "Close",
-  },
-};
-
 const ROLE_LABEL = {
-  super: "roleSuper",
-  admin: "roleAdmin",
+  super: "logout.roleSuper",
+  admin: "logout.roleAdmin",
+  user: "logout.roleUser",
 };
 
 const RED_BTN_SX = {
@@ -258,8 +190,8 @@ function InfoField({
 }
 
 export default function LogoutPage() {
-  const { i18n } = useTranslation();
-  const { admin, logout } = useAuth();
+  const { t, i18n } = useTranslation();
+  const { admin, clearSession } = useAuth();
   const appToast = useAppToast();
   const navigate = useNavigate();
 
@@ -268,9 +200,7 @@ export default function LogoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasConfirmed, setHasConfirmed] = useState(false);
 
-  const lang = i18n.language === "ar" ? "ar" : "en";
-  const isRTL = lang === "ar";
-  const L = labels[lang];
+  const isRTL = i18n.language === "ar";
 
   const fullName = admin
     ? `${admin.first_name ?? ""} ${admin.last_name ?? ""}`.trim() ||
@@ -278,12 +208,11 @@ export default function LogoutPage() {
       "—"
     : "—";
 
-  const roleKey = ROLE_LABEL[admin?.role] || "roleUser";
-  const roleLabel = L[roleKey];
+  const roleKey = ROLE_LABEL[admin?.role] || "logout.roleUser";
+  const roleLabel = t(roleKey);
   const isSuper = admin?.role === "super";
   const currentRoleColor = isSuper ? "purple" : "blue";
 
-  // ✅ تحديد موضع زر الإغلاق حسب اتجاه اللغة
   const closePosition = isRTL ? { left: 3 } : { right: 3 };
 
   const handleClose = () => {
@@ -303,23 +232,19 @@ export default function LogoutPage() {
 
     try {
       await authAPI.logout();
-      appToast.success(L.successToast);
-    } catch {
-      appToast.error(L.errorToast);
-    } finally {
+      clearSession();
+      appToast.success(t("logout.successToast"));
       onClose();
-      try {
-        logout();
-      } catch {
-        // حتى لو فشل، نكمل التوجيه
-      }
       navigate("/login", { replace: true });
+    } catch {
+      appToast.error(t("logout.errorToast"));
+      setIsSubmitting(false);
+      setHasConfirmed(false);
     }
   };
 
   return (
     <Box w="full" py={1} dir={isRTL ? "rtl" : "ltr"}>
-      {/* ─── Page header ─── */}
       <Flex
         align={{ base: "start", md: "center" }}
         direction={{ base: "column", md: "row" }}
@@ -340,7 +265,7 @@ export default function LogoutPage() {
         <VStack align="start" spacing={0.5} flex="1">
           <HStack spacing={2} wrap="wrap">
             <Heading size="md" color="text-primary">
-              {L.pageTitle}
+              {t("logout.pageTitle")}
             </Heading>
             <Badge
               colorScheme={currentRoleColor}
@@ -351,22 +276,21 @@ export default function LogoutPage() {
               py={0.5}
               fontWeight="semibold"
               textTransform="none">
-              {L.youAre}: {roleLabel}
+              {t("logout.youAre")}: {roleLabel}
             </Badge>
           </HStack>
           <Text fontSize="xs" color="text-muted">
-            {L.pageSubtitle}
+            {t("logout.pageSubtitle")}
           </Text>
         </VStack>
       </Flex>
 
       <VStack align="stretch" spacing={4}>
-        {/* ═══ 1. Session Info ═══ */}
         <Card>
           <SectionHeader
             icon={LuKeyRound}
-            title={L.sectionSession}
-            subtitle={L.deviceValue}
+            title={t("logout.sectionSession")}
+            subtitle={t("logout.deviceValue")}
             iconBg="syria.green.light"
             iconDarkBg="syria.green.light"
           />
@@ -374,14 +298,14 @@ export default function LogoutPage() {
           <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
             <InfoField
               icon={LuUser}
-              label={L.userLabel}
+              label={t("logout.userLabel")}
               value={fullName}
               iconColor="syria.green.mid"
               iconDarkColor="syria.green.light"
             />
             <InfoField
               icon={LuShield}
-              label={L.roleLabel}
+              label={t("logout.roleLabel")}
               iconColor={isSuper ? "purple.500" : "blue.500"}
               iconDarkColor={isSuper ? "purple.300" : "blue.300"}
               badge={
@@ -399,21 +323,21 @@ export default function LogoutPage() {
             />
             <InfoField
               icon={LuMonitor}
-              label={L.deviceLabel}
-              value={L.deviceValue}
+              label={t("logout.deviceLabel")}
+              value={t("logout.deviceValue")}
               iconColor="blue.500"
               iconDarkColor="blue.300"
             />
             <InfoField
               icon={LuClock}
-              label={L.timeLabel}
+              label={t("logout.timeLabel")}
               value={formatDateTimeNumeric()}
               iconColor="orange.500"
               iconDarkColor="orange.300"
             />
             <InfoField
               icon={LuShieldCheck}
-              label={L.securityLabel}
+              label={t("logout.securityLabel")}
               iconColor="green.500"
               iconDarkColor="green.300"
               badge={
@@ -425,13 +349,13 @@ export default function LogoutPage() {
                   px={2}
                   py={0.5}
                   textTransform="none">
-                  {L.securityValue}
+                  {t("logout.securityValue")}
                 </Badge>
               }
             />
             <InfoField
               icon={LuFingerprint}
-              label={L.sessionLabel}
+              label={t("logout.sessionLabel")}
               value={admin?._id ? `#${String(admin._id).slice(-6)}` : "—"}
               iconColor="syria.wheat.dark"
               iconDarkColor="syria.wheat.mid"
@@ -439,22 +363,20 @@ export default function LogoutPage() {
           </SimpleGrid>
         </Card>
 
-        {/* ═══ 2. Warning ═══ */}
         <Card>
           <SectionHeader
             icon={LuTriangleAlert}
-            title={L.sectionWarning}
+            title={t("logout.sectionWarning")}
             iconBg="orange.100"
             iconDarkBg="orange.900"
             iconColor="orange.600"
             iconDarkColor="orange.200"
           />
           <Text fontSize="sm" color="text-secondary" lineHeight="tall">
-            {L.warningText}
+            {t("logout.warningText")}
           </Text>
         </Card>
 
-        {/* ═══ 3. Actions ═══ */}
         <Flex
           justify="flex-end"
           gap={2}
@@ -475,7 +397,7 @@ export default function LogoutPage() {
               bg: "blackAlpha.100",
               _dark: { bg: "whiteAlpha.100" },
             }}>
-            {L.cancel}
+            {t("logout.cancel")}
           </Button>
           <Button
             type="button"
@@ -484,12 +406,11 @@ export default function LogoutPage() {
             onClick={handleOpen}
             minW={{ base: "full", sm: "auto" }}
             sx={RED_BTN_SX}>
-            {L.save}
+            {t("logout.save")}
           </Button>
         </Flex>
       </VStack>
 
-      {/* ═══ Confirm Dialog ═══ */}
       <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
@@ -506,7 +427,6 @@ export default function LogoutPage() {
             overflow="hidden"
             dir={isRTL ? "rtl" : "ltr"}
             position="relative">
-            {/* ✅ زر الإغلاق — يتبع اتجاه اللغة */}
             <CloseButton
               position="absolute"
               top={3}
@@ -514,7 +434,7 @@ export default function LogoutPage() {
               onClick={handleClose}
               isDisabled={isSubmitting}
               size="sm"
-              aria-label={L.close}
+              aria-label={t("logout.close")}
               zIndex={2}
               color="text-primary"
             />
@@ -536,7 +456,7 @@ export default function LogoutPage() {
                   sx={RED_ICON_BOX_SX}>
                   <Icon as={LuTriangleAlert} boxSize={5} />
                 </Flex>
-                <Text textAlign="start">{L.dialogTitle}</Text>
+                <Text textAlign="start">{t("logout.dialogTitle")}</Text>
               </HStack>
             </AlertDialogHeader>
 
@@ -547,10 +467,9 @@ export default function LogoutPage() {
                   fontSize="sm"
                   lineHeight="tall"
                   textAlign="start">
-                  {L.dialogBody}
+                  {t("logout.dialogBody")}
                 </Text>
 
-                {/* Checkbox verification */}
                 <Box
                   p={3}
                   rounded="lg"
@@ -580,7 +499,7 @@ export default function LogoutPage() {
                       _dark={{ color: "error.100" }}
                       lineHeight="tall"
                       textAlign="start">
-                      {L.checkboxLabel}
+                      {t("logout.checkboxLabel")}
                     </Text>
                   </Checkbox>
                 </Box>
@@ -604,18 +523,18 @@ export default function LogoutPage() {
                   bg: "blackAlpha.100",
                   _dark: { bg: "whiteAlpha.100" },
                 }}>
-                {L.dialogCancel}
+                {t("logout.dialogCancel")}
               </Button>
               <Button
                 size="sm"
                 leftIcon={<LuLogOut size={14} />}
                 onClick={handleConfirm}
                 isLoading={isSubmitting}
-                loadingText={L.signingOut}
+                loadingText={t("logout.signingOut")}
                 isDisabled={!hasConfirmed}
                 minW={{ base: "full", sm: "auto" }}
                 sx={RED_BTN_SX}>
-                {L.dialogConfirm}
+                {t("logout.dialogConfirm")}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
