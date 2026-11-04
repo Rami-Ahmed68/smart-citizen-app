@@ -16,6 +16,7 @@ const DashBoard = lazy(() => import("../pages/dashboard/DashBoard.jsx"));
 const AddCitizenPage = lazy(
   () => import("../pages/addCitizen/AddCitizenPage.jsx"),
 );
+const LogOutPage = lazy(() => import("../pages/logOutPage/LogOutPage.jsx"));
 const InstallAppPage = lazy(
   () => import("../pages/install/InstallAppPage.jsx"),
 );
@@ -128,6 +129,15 @@ const AppRoutes = () => {
           element={
             <ProtectedPage roles={["super"]}>
               <Placeholder title="Add Admin" />
+            </ProtectedPage>
+          }
+        />
+
+        <Route
+          path="/logout"
+          element={
+            <ProtectedPage>
+              <LogOutPage />
             </ProtectedPage>
           }
         />

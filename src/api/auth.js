@@ -1,8 +1,9 @@
 import api from "./axios";
+import { ENDPOINTS } from "./endpoints";
 
 export const authAPI = {
   login: async (email, password) => {
-    const { data } = await api.post("/admin/auth/log-in", { email, password });
+    const { data } = await api.post(ENDPOINTS.auth.login, { email, password });
     const payload = data?.data ?? data;
 
     return {
@@ -12,6 +13,6 @@ export const authAPI = {
   },
 
   logout: async () => {
-    await api.post("/admin/auth/logout");
+    await api.post(ENDPOINTS.auth.logout);
   },
 };

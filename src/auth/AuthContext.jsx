@@ -53,17 +53,6 @@ export function AuthProvider({ children }) {
     },
     [saveAdmin],
   );
-
-  const logout = useCallback(() => {
-    setAccessToken(null);
-    saveAdmin(null);
-  }, [saveAdmin]);
-
-  useEffect(() => {
-    setUnauthorizedHandler(logout);
-    return () => setUnauthorizedHandler(null);
-  }, [logout]);
-
   const value = useMemo(
     () => ({
       admin,
@@ -71,7 +60,6 @@ export function AuthProvider({ children }) {
       isLoading: false,
 
       login,
-      logout,
 
       hasRole: (role) => admin?.role === role,
       hasAnyRole: (roles = []) => !!admin && roles.includes(admin.role),
@@ -81,7 +69,7 @@ export function AuthProvider({ children }) {
       hasAllPermissions: (perms = []) =>
         !!admin && perms.every((p) => admin.permissions.includes(p)),
     }),
-    [admin, login, logout],
+    [admin, login],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -11,9 +11,21 @@ export default function ToggleLang() {
       label={!isArabic ? "Switch Language" : "تغيير اللغة"}
       placement="auto">
       <Button
-        bg="icon-btn"
+        size="sm"
         variant="ghost"
-        onClick={() => i18n.changeLanguage(isArabic ? "en" : "ar")}>
+        bg="lang-btn"
+        color="text-primary"
+        fontWeight="semibold"
+        fontSize="xs"
+        letterSpacing="0.05em"
+        px={2.5}
+        _hover={{
+          bg: "bg-hover",
+        }}
+        onClick={() => i18n.changeLanguage(isArabic ? "en" : "ar")}
+        sx={{
+          transition: "background 0.15s, color 0.15s",
+        }}>
         {isArabic ? "EN" : "ar"}
       </Button>
     </Tooltip>

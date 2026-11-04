@@ -51,8 +51,12 @@ export default function LoginPage() {
 
     try {
       const data = await authAPI.login(email.trim(), password);
+      console.log(data);
       login(data);
-      appToast.success(t("auth.welcomeBack"), email);
+      appToast.success(
+        t("auth.welcomeBack"),
+        `${data.admin.first_name} ${data.admin.last_name}`,
+      );
       navigate(from, { replace: true });
     } catch (err) {
       appToast.error(err);

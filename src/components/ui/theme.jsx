@@ -1,3 +1,4 @@
+// src/components/ui/theme.jsx
 import { extendTheme } from "@chakra-ui/react";
 
 export const Theme = extendTheme({
@@ -166,7 +167,7 @@ export const Theme = extendTheme({
   semanticTokens: {
     colors: {
       "bg-body": {
-        default: "#ececec",
+        default: "#f0f2f5",
         _dark: "#181818",
       },
       "bg-sid-bar": {
@@ -183,9 +184,41 @@ export const Theme = extendTheme({
         _dark: "#2f2f2fb4",
       },
 
+      "theme-btn": {
+        default: "#b053cc",
+        _dark: "#8017a0",
+      },
+
+      "lang-btn": {
+        default: "#8694eb",
+        _dark: "#2c3eb1",
+      },
+
       "bg-input": {
-        default: "#e0e0e0",
+        default: "#f1f2f4",
         _dark: "#1c1c1c",
+      },
+
+      "bg-card": {
+        default: "#ffffff",
+        _dark: "#1f1f1f",
+      },
+
+      "text-primary": {
+        default: "gray.800",
+        _dark: "white",
+      },
+      "text-secondary": {
+        default: "gray.600",
+        _dark: "gray.300",
+      },
+      "text-muted": {
+        default: "gray.500",
+        _dark: "gray.400",
+      },
+      "border-color": {
+        default: "gray.200",
+        _dark: "whiteAlpha.200",
       },
     },
   },

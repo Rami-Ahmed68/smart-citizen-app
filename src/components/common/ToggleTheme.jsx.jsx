@@ -1,6 +1,7 @@
 // src/components/common/ToggleTheme.jsx
-import { Tooltip, IconButton, useColorMode } from "@chakra-ui/react";
+import { Tooltip, IconButton } from "@chakra-ui/react";
 import { LuSun, LuMoon } from "react-icons/lu";
+import { useColorMode } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 
 const labels = {
@@ -27,11 +28,17 @@ export default function ToggleTheme() {
   return (
     <Tooltip label={isDark ? text.lightMode : text.darkMode} placement="bottom">
       <IconButton
-        bg="icon-btn"
-        aria-label={text.toggleTheme}
-        icon={isDark ? <LuSun /> : <LuMoon />}
+        size="sm"
         variant="ghost"
+        bg="theme-btn"
+        color="text-primary"
+        aria-label={text.toggleTheme}
+        icon={isDark ? <LuSun size={16} /> : <LuMoon size={16} />}
+        _hover={{ bg: "bg-hover" }}
         onClick={toggleColorMode}
+        sx={{
+          transition: "background 0.15s, color 0.15s",
+        }}
       />
     </Tooltip>
   );
