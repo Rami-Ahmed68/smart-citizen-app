@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import MainLayOut from "./layouts/MainLayOut.jsx";
 import AppRoutes from "./routes/AppRoutes.js";
 import i18n from "./i18n.js";
 
@@ -24,11 +23,7 @@ function App() {
     };
   }, []);
 
-  return (
-    <MainLayOut>
-      <AppRoutes />
-    </MainLayOut>
-  );
+  return <AppRoutes />;
 }
 
 export default App;

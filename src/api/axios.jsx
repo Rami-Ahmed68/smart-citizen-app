@@ -1,7 +1,12 @@
 // src/api/axios.js
 import axios from "axios";
 
-const BASE_URL = process.env.REACT_APP_API_URL;
+const normalizeBaseUrl = (url) => {
+  if (!url) return "http://localhost:8080/api";
+  return url.replace(/\/+$/, "");
+};
+
+const BASE_URL = normalizeBaseUrl(process.env.REACT_APP_API_URL);
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -66,38 +71,6 @@ api.interceptors.request.use(
   },
 );
 
-const REFRESH_URL = "/auth/refresh";
-
-let isRefreshing = false;
-let pendingQueue = [];
-
-const processQueue = (error, newToken = null) => {
-  pendingQueue.forEach(({ resolve, reject, config }) => {
-    if (error) {
-      reject(error);
-    } else {
-      if (newToken && config?.headers) {
-        config.headers.Authorization = `Bearer ${newToken}`;
-      }
-      resolve();
-    }
-  });
-  pendingQueue = [];
-};
-
-const shouldSkipRefresh = (config) => {
-  if (!config) return true;
-  if (config._retry) return true;
-
-  const url = config.url || "";
-  return (
-    url.includes(REFRESH_URL) ||
-    url.includes("/auth/login") ||
-    url.includes("/auth/logout") ||
-    url.includes("/auth/register")
-  );
-};
-
 api.interceptors.response.use(
   (response) => {
     devLog(
@@ -107,100 +80,84 @@ api.interceptors.response.use(
     );
     return response;
   },
-  async (error) => {
-    const originalRequest = error.config;
+  (error) => {
     const status = error.response?.status;
 
-    if (status !== 401 || shouldSkipRefresh(originalRequest)) {
-      devError(
-        `← ${status || "NETWORK"} ${originalRequest?.method?.toUpperCase()} ${
-          originalRequest?.url
-        }`,
-        error.response?.data || error.message,
-      );
-      return Promise.reject(error);
-    }
+    devError(
+      `← ${status || "NETWORK"} ${error.config?.method?.toUpperCase()} ${
+        error.config?.url
+      }`,
+      error.response?.data || error.message,
+    );
 
-    if (isRefreshing) {
-      devLog("401 → queued (refresh in progress)");
-      return new Promise((resolve, reject) => {
-        pendingQueue.push({ resolve, reject, config: originalRequest });
-      }).then(() => api(originalRequest));
-    }
-
-    originalRequest._retry = true;
-    isRefreshing = true;
-    devLog("401 → refreshing token…");
-
-    try {
-      const { data } = await axios.post(
-        `${BASE_URL}${REFRESH_URL}`,
-        {},
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
-
-      const newToken = data?.accessToken;
-      if (!newToken) {
-        throw new Error("Refresh succeeded but no accessToken in response");
+    if (status === 401 && onUnauthorized) {
+      try {
+        onUnauthorized(error);
+      } catch (e) {
+        devError("onUnauthorized handler threw:", e);
       }
-
-      setAccessToken(newToken);
-      devLog("refresh OK → retrying queued requests");
-
-      processQueue(null, newToken);
-
-      originalRequest.headers = originalRequest.headers || {};
-      originalRequest.headers.Authorization = `Bearer ${newToken}`;
-      return api(originalRequest);
-    } catch (refreshError) {
-      devError("refresh FAILED → clearing session", refreshError.message);
-      processQueue(refreshError, null);
-      setAccessToken(null);
-
-      if (onUnauthorized) {
-        try {
-          onUnauthorized(refreshError);
-        } catch (e) {
-          devError("onUnauthorized handler threw:", e);
-        }
-      }
-
-      return Promise.reject(refreshError);
-    } finally {
-      isRefreshing = false;
     }
+
+    return Promise.reject(error);
   },
 );
 
 export const getErrorMessage = (error, fallback = "حدث خطأ غير متوقع") => {
   if (!error) return fallback;
 
-  const data = error.response?.data;
-  if (!data) {
-    if (error.code === "ECONNABORTED") return "انتهت مهلة الطلب";
-    if (!error.response) return "تعذر الاتصال بالخادم";
+  if (error.code === "ECONNABORTED") return "انتهت مهلة الطلب";
+  if (error.code === "ERR_CANCELED") return "تم إلغاء الطلب";
+  if (!error.response) {
+    if (error.code === "ERR_NETWORK") return "تعذر الاتصال بالخادم";
     return error.message || fallback;
   }
 
+  const data = error.response.data;
+  if (!data) return error.message || fallback;
   if (typeof data === "string") return data;
-  if (data.message) return data.message;
-  if (data.error) return data.error;
+
+  const currentLang = document.documentElement.lang || "ar";
+
+  const pickLocalized = (value) => {
+    if (typeof value === "string") return value;
+    if (value && typeof value === "object") {
+      return (
+        value[currentLang] ||
+        value.ar ||
+        value.en ||
+        Object.values(value)[0] ||
+        null
+      );
+    }
+    return null;
+  };
+
+  if (data.message) {
+    const picked = pickLocalized(data.message);
+    if (picked) return picked;
+  }
+
+  if (data.error) {
+    const picked = pickLocalized(data.error);
+    if (picked) return picked;
+  }
+
   if (Array.isArray(data.errors) && data.errors.length) {
     return data.errors
-      .map((e) => (typeof e === "string" ? e : e.message))
+      .map((e) => pickLocalized(e) || (typeof e === "string" ? e : e.message))
+      .filter(Boolean)
       .join(", ");
   }
+
   if (
     typeof data === "object" &&
     data.errors &&
     typeof data.errors === "object"
   ) {
     const first = Object.values(data.errors)[0];
-    if (Array.isArray(first)) return first[0];
-    if (typeof first === "string") return first;
+    if (Array.isArray(first)) return pickLocalized(first[0]) || fallback;
+    const picked = pickLocalized(first);
+    if (picked) return picked;
   }
 
   return fallback;

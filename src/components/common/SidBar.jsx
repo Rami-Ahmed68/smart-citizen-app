@@ -2,6 +2,7 @@
 import { NavLink } from "react-router-dom";
 import {
   Box,
+  Divider,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -17,6 +18,8 @@ import {
   LuUserCog,
   LuShield,
   LuDownload,
+  LuUser,
+  LuLogOut,
 } from "react-icons/lu";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../auth/AuthContext";
@@ -29,6 +32,8 @@ const labels = {
     admins: "المسؤولون",
     addAdmin: "إضافة مسؤول",
     installApp: "تثبيت التطبيق",
+    profile: "الحساب الشخصي",
+    logout: "تسجيل الخروج",
     brand: "المواطن الذكي",
   },
   en: {
@@ -38,6 +43,8 @@ const labels = {
     admins: "Admins",
     addAdmin: "Add Admin",
     installApp: "Install App",
+    profile: "My Profile",
+    logout: "Logout",
     brand: "Smart Citizen",
   },
 };
@@ -69,21 +76,21 @@ const links = [
     labelKey: "admins",
     icon: LuUserCog,
     permissions: ["admins.read"],
-    role: ["super", "admin"],
+    role: ["super"],
   },
   {
-    to: "/admins/create",
+    to: "/add/admin",
     labelKey: "addAdmin",
     icon: LuShield,
     permissions: ["admins.create"],
-    role: ["super", "admin"],
+    role: ["super"],
   },
   {
     to: "/install",
     labelKey: "installApp",
     icon: LuDownload,
     permissions: [],
-    role: ["super"],
+    role: ["super", "admin", "user"],
   },
 ];
 
@@ -93,11 +100,19 @@ function SidBarLinks({ onNavigate }) {
 
   const lang = i18n.language === "ar" ? "ar" : "en";
   const text = labels[lang];
+
+  const userRole = admin?.role;
   const userPermissions = admin?.permissions || [];
 
   const visibleLinks = links.filter((link) => {
-    if (!link.permissions || link.permissions.length === 0) return true;
-    return link.permissions.some((p) => userPermissions.includes(p));
+    if (userRole === "super") return true;
+
+    const roleOk = !link.role?.length || link.role.includes(userRole);
+    const permissionOk =
+      !link.permissions?.length ||
+      link.permissions.some((p) => userPermissions.includes(p));
+
+    return roleOk && permissionOk;
   });
 
   return (
@@ -126,6 +141,57 @@ function SidBarLinks({ onNavigate }) {
   );
 }
 
+function SidBarFooter({ onNavigate }) {
+  const { i18n } = useTranslation();
+
+  const lang = i18n.language === "ar" ? "ar" : "en";
+  const text = labels[lang];
+
+  return (
+    <Stack spacing="1">
+      <Divider borderColor="border-color" mb={2} />
+
+      <NavLink to="/profile" end onClick={onNavigate}>
+        {({ isActive }) => (
+          <Box
+            display="flex"
+            alignItems="center"
+            gap="3"
+            px="3"
+            py="2"
+            rounded="md"
+            fontWeight={isActive ? "semibold" : "normal"}
+            bg={isActive ? "brand.500" : "transparent"}
+            color={isActive ? "white" : "inherit"}
+            _hover={{ bg: isActive ? "brand.600" : "bg-hover" }}>
+            <LuUser />
+            {text.profile}
+          </Box>
+        )}
+      </NavLink>
+
+      <NavLink to="/logout" end onClick={onNavigate}>
+        {({ isActive }) => (
+          <Box
+            display="flex"
+            alignItems="center"
+            gap="3"
+            px="3"
+            py="2"
+            rounded="md"
+            fontWeight={isActive ? "semibold" : "normal"}
+            bg={isActive ? "red.500" : "transparent"}
+            color={isActive ? "white" : "red.500"}
+            _hover={{ bg: "red.50", _dark: { bg: "red.900" } }}>
+            <LuLogOut />
+            {text.logout}
+          </Box>
+        )}
+      </NavLink>
+    </Stack>
+  );
+}
+
 export default function SidBar({ open, onClose }) {
   const { i18n } = useTranslation();
   const lang = i18n.language === "ar" ? "ar" : "en";
@@ -134,25 +200,39 @@ export default function SidBar({ open, onClose }) {
 
   return (
     <>
+      {/* ─── سايدبار الديسكتوب ─── */}
       <Box
         as="nav"
-        display={{ base: "none", md: "block" }}
+        display={{ base: "none", md: "flex" }}
+        flexDirection="column"
         w="240px"
         p="4"
         bg="bg-sid-bar"
         borderEndWidth="1px"
         borderColor="border-color"
-        flexShrink={0}>
-        <SidBarLinks />
+        flexShrink={0}
+        h="100%">
+        <Box flex="1" overflowY="auto">
+          <SidBarLinks />
+        </Box>
+        <Box mt="auto" pt="4">
+          <SidBarFooter />
+        </Box>
       </Box>
 
+      {/* ─── درج الجوال ─── */}
       <Drawer placement={placement} isOpen={open} onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent bg="bg-sid-bar">
           <DrawerCloseButton />
           <DrawerHeader>{text.brand}</DrawerHeader>
-          <DrawerBody>
-            <SidBarLinks onNavigate={onClose} />
+          <DrawerBody display="flex" flexDirection="column" pb={4}>
+            <Box flex="1">
+              <SidBarLinks onNavigate={onClose} />
+            </Box>
+            <Box mt="auto">
+              <SidBarFooter onNavigate={onClose} />
+            </Box>
           </DrawerBody>
         </DrawerContent>
       </Drawer>

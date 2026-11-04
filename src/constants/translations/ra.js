@@ -2,6 +2,7 @@
 import navbar from "./arabic/navbar";
 import sidbar from "./arabic/sidbar";
 import auth from "./arabic/auth";
+import toast from "./english/toast";
 // import settings from "./arabic/settings";
 // import common from "./arabic/common";
 // import citizens from "./arabic/citizens";
@@ -12,6 +13,7 @@ const ar = {
   navbar,
   sidbar,
   auth,
+  toast,
   //   settings,
   //   common,
   //   citizens,

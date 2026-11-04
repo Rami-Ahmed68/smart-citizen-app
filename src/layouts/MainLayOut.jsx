@@ -2,15 +2,16 @@
 import { useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { useAuth } from "../auth/AuthContext";
+import { Outlet } from "react-router-dom";
 import NavBar from "../components/common/NavBar";
 import SidBar from "../components/common/SidBar";
 
-export default function MainLayOut({ children, role = "user" }) {
+export default function MainLayOut({ role = "user" }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const { isAuthenticated } = useAuth();
 
   return (
-    <Flex direction="column" h="100vh" bg="bg-body">
+    <Flex direction="column" h="100vh">
       <Box
         as="header"
         h="60px"
@@ -39,8 +40,13 @@ export default function MainLayOut({ children, role = "user" }) {
           open={isSidebarOpen}
           onClose={() => setSidebarOpen(false)}
         />
-        <Box as="main" flex="1" overflowY="auto" p={{ base: 4, md: 6 }}>
-          {children}
+        <Box
+          as="main"
+          flex="1"
+          overflowY="auto"
+          p={{ base: 4, md: 6 }}
+          bg="bg-body">
+          <Outlet />
         </Box>
       </Flex>
     </Flex>

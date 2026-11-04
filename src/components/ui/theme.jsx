@@ -169,7 +169,7 @@ export const Theme = extendTheme({
         default: "#ececec",
         _dark: "#181818",
       },
-      "bg-sidbar": {
+      "bg-sid-bar": {
         default: "#fdfdfd",
         _dark: "#030303",
       },

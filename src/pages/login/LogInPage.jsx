@@ -18,24 +18,24 @@ import {
   InputRightElement,
   Stack,
   Text,
-  useToast,
   VStack,
 } from "@chakra-ui/react";
 import { LuMail, LuLock, LuEye, LuEyeOff } from "react-icons/lu";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../auth/AuthContext";
-import { getErrorMessage } from "../../api/axios";
-import { getTodayISO } from "../../utils/date";
+import { authAPI } from "../../api/auth";
+import { useAppToast } from "../../components/common/AppToast";
+import { getCurrentYear } from "../../utils/date";
 import logo from "../../assets/new_syrian_logo.png";
 
 export default function LoginPage() {
   const { t } = useTranslation();
 
   const { login } = useAuth();
+  const appToast = useAppToast();
   const navigate = useNavigate();
   const location = useLocation();
-  const toast = useToast();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,17 +48,14 @@ export default function LoginPage() {
     e.preventDefault();
     if (isSubmitting) return;
     setIsSubmitting(true);
+
     try {
-      await login(email.trim(), password);
+      const data = await authAPI.login(email.trim(), password);
+      login(data);
+      appToast.success(t("auth.welcomeBack"), email);
       navigate(from, { replace: true });
     } catch (err) {
-      toast({
-        title: t("auth.loginError"),
-        description: getErrorMessage(err, t("auth.loginErrorDesc")),
-        status: "error",
-        duration: 4000,
-        isClosable: true,
-      });
+      appToast.error(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -201,7 +198,7 @@ export default function LoginPage() {
               color="whiteAlpha.500"
               letterSpacing="0.15em"
               textTransform="uppercase">
-              {t("auth.copyright")} {getTodayISO()}
+              {t("auth.copyright")} {getCurrentYear()}
             </Text>
           </VStack>
         </VStack>
@@ -387,10 +384,10 @@ export default function LoginPage() {
               letterSpacing="0.05em">
               <Text
                 fontSize="2xs"
-                color="whiteAlpha.500"
+                color="text-muted"
                 letterSpacing="0.15em"
                 textTransform="uppercase">
-                {t("auth.copyright")} {getTodayISO()}
+                {t("auth.copyright")} {getCurrentYear()}
               </Text>
             </HStack>
           </VStack>

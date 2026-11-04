@@ -8,7 +8,7 @@ export default function ToggleLang() {
 
   return (
     <Tooltip
-      label={isArabic ? "Switch to English" : "تغيير اللغة"}
+      label={!isArabic ? "Switch Language" : "تغيير اللغة"}
       placement="auto">
       <Button
         bg="icon-btn"
