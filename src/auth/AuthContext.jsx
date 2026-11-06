@@ -5,12 +5,15 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { setAccessToken, setUnauthorizedHandler } from "../api/axios";
+import { authAPI } from "../api/auth";
 
 const AuthContext = createContext(null);
 const ADMIN_KEY = "smart-citizen-admin";
+const REFRESH_INTERVAL_MS = 14 * 60 * 1000;
 
 const readStoredAdmin = () => {
   try {
@@ -28,6 +31,9 @@ const readStoredAdmin = () => {
 
 export function AuthProvider({ children }) {
   const [admin, setAdmin] = useState(readStoredAdmin);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const bootstrappedRef = useRef(false);
 
   const saveAdmin = useCallback((adminData) => {
     const valid =
@@ -54,26 +60,69 @@ export function AuthProvider({ children }) {
     [saveAdmin],
   );
 
-  // ✅ أداة محايدة: امسح الحالة المحلية فقط (لا طلب شبكة)
   const clearSession = useCallback(() => {
     setAccessToken(null);
     saveAdmin(null);
   }, [saveAdmin]);
 
-  // ✅ ربط معالج 401 — هنا نمسح تلقائيًا لأن الخادم رفض التوكن
+  const refreshSession = useCallback(async () => {
+    try {
+      const data = await authAPI.refresh();
+
+      if (data?.accessToken) setAccessToken(data.accessToken);
+      if (data?.admin) saveAdmin(data.admin);
+      return data?.admin ?? null;
+    } catch (err) {
+      clearSession();
+      throw err;
+    }
+  }, [saveAdmin, clearSession]);
+
   useEffect(() => {
     setUnauthorizedHandler(clearSession);
     return () => setUnauthorizedHandler(null);
   }, [clearSession]);
 
+  useEffect(() => {
+    if (bootstrappedRef.current) return;
+    bootstrappedRef.current = true;
+
+    const bootstrap = async () => {
+      try {
+        const data = await authAPI.refresh();
+
+        if (data?.accessToken) setAccessToken(data.accessToken);
+        if (data?.admin) saveAdmin(data.admin);
+        else clearSession();
+      } catch {
+        clearSession();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    bootstrap();
+  }, [saveAdmin, clearSession]);
+
+  useEffect(() => {
+    if (!admin || isLoading) return;
+
+    const id = setInterval(() => {
+      refreshSession().catch(() => {});
+    }, REFRESH_INTERVAL_MS);
+
+    return () => clearInterval(id);
+  }, [admin, isLoading, refreshSession]);
+
   const value = useMemo(
     () => ({
       admin,
       isAuthenticated: !!admin,
-      isLoading: false,
+      isLoading,
 
       login,
-      clearSession, // ← للاستخدام من LogoutPage (بعد نجاح الخادم)
+      clearSession,
+      refreshSession,
 
       hasRole: (role) => admin?.role === role,
       hasAnyRole: (roles = []) => !!admin && roles.includes(admin.role),
@@ -83,7 +132,7 @@ export function AuthProvider({ children }) {
       hasAllPermissions: (perms = []) =>
         !!admin && perms.every((p) => admin.permissions.includes(p)),
     }),
-    [admin, login, clearSession],
+    [admin, isLoading, login, clearSession, refreshSession],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

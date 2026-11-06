@@ -7,7 +7,7 @@ export const ENDPOINTS = {
   auth: {
     login: "/admin/auth/log-in",
     logout: "/admin/auth/log-out",
-    refresh: "/admin/auth/refresh",
+    refresh: "/admin/auth/refresh-token",
     forgotPassword: "/admin/auth/forgot-password",
     resetPassword: "/admin/auth/reset-password",
     changePassword: "/admin/auth/change-password",

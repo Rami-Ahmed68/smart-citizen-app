@@ -1,18 +1,31 @@
+// src/api/auth.js
 import api from "./axios";
-import { ENDPOINTS } from "./endpoints";
+
+const normalize = (data) => {
+  const payload = data?.data ?? data;
+  return {
+    accessToken: payload?.access_token ?? payload?.accessToken ?? null,
+    admin: payload?.admin ?? null,
+  };
+};
 
 export const authAPI = {
   login: async (email, password) => {
-    const { data } = await api.post(ENDPOINTS.auth.login, { email, password });
-    const payload = data?.data ?? data;
+    const { data } = await api.post("/admin/auth/log-in", {
+      email,
+      password,
+    });
+    return normalize(data);
+  },
 
-    return {
-      accessToken: payload?.access_token ?? payload?.accessToken ?? null,
-      admin: payload?.admin ?? null,
-    };
+  refresh: async () => {
+    const { data } = await api.post("/admin/auth/refresh-token");
+    return normalize(data);
   },
 
   logout: async () => {
-    await api.post(ENDPOINTS.auth.logout);
+    await api.post("/admin/auth/log-out");
   },
 };
+
+export default authAPI;

@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const normalizeBaseUrl = (url) => {
-  if (!url) return "http://localhost:8080/api";
+  if (!url) return "http://localhost:3000";
   return url.replace(/\/+$/, "");
 };
 
@@ -71,6 +71,37 @@ api.interceptors.request.use(
   },
 );
 
+const REFRESH_URL = "/admin/auth/refresh-token";
+
+let isRefreshing = false;
+let pendingQueue = [];
+
+const processQueue = (error, newToken = null) => {
+  pendingQueue.forEach(({ resolve, reject, config }) => {
+    if (error) {
+      reject(error);
+    } else {
+      if (newToken && config?.headers) {
+        config.headers.Authorization = `Bearer ${newToken}`;
+      }
+      resolve();
+    }
+  });
+  pendingQueue = [];
+};
+
+const shouldSkipRefresh = (config) => {
+  if (!config) return true;
+  if (config._retry) return true;
+
+  const url = config.url || "";
+  return (
+    url.includes(REFRESH_URL) ||
+    url.includes("/admin/auth/log-in") ||
+    url.includes("/admin/auth/log-out")
+  );
+};
+
 api.interceptors.response.use(
   (response) => {
     devLog(
@@ -78,30 +109,75 @@ api.interceptors.response.use(
         response.config.url
       }`,
     );
-
-    devLog("📦 data:", response.data);
-
     return response;
   },
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
     const status = error.response?.status;
 
     devError(
-      `← ${status || "NETWORK"} ${error.config?.method?.toUpperCase()} ${
-        error.config?.url
+      `← ${status || "NETWORK"} ${originalRequest?.method?.toUpperCase()} ${
+        originalRequest?.url
       }`,
       error.response?.data || error.message,
     );
 
-    if (status === 401 && onUnauthorized) {
-      try {
-        onUnauthorized(error);
-      } catch (e) {
-        devError("onUnauthorized handler threw:", e);
-      }
+    if (status !== 401 || shouldSkipRefresh(originalRequest)) {
+      return Promise.reject(error);
     }
 
-    return Promise.reject(error);
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        pendingQueue.push({ resolve, reject, config: originalRequest });
+      }).then(() => {
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return api(originalRequest);
+      });
+    }
+
+    originalRequest._retry = true;
+    isRefreshing = true;
+
+    try {
+      const { data } = await axios.post(
+        `${BASE_URL}${REFRESH_URL}`,
+        {},
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+
+      const payload = data?.data ?? data;
+      const newToken = payload?.access_token ?? payload?.accessToken;
+
+      if (!newToken) {
+        throw new Error("Refresh succeeded but no access token in response");
+      }
+
+      setAccessToken(newToken);
+      processQueue(null, newToken);
+
+      originalRequest.headers = originalRequest.headers || {};
+      originalRequest.headers.Authorization = `Bearer ${newToken}`;
+      return api(originalRequest);
+    } catch (refreshError) {
+      processQueue(refreshError, null);
+      setAccessToken(null);
+
+      if (onUnauthorized) {
+        try {
+          onUnauthorized(refreshError);
+        } catch (e) {
+          devError("onUnauthorized threw:", e);
+        }
+      }
+
+      return Promise.reject(refreshError);
+    } finally {
+      isRefreshing = false;
+    }
   },
 );
 
