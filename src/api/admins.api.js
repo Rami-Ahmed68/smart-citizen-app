@@ -4,7 +4,7 @@ import { ENDPOINTS } from "./endpoints";
 
 export const adminsAPI = {
   getAll: async (params = {}) => {
-    const { data } = await api.get(ENDPOINTS.admins.list, { params });
+    const { data } = await api.get(ENDPOINTS.admins.all, { params });
     return data;
   },
 
@@ -34,10 +34,9 @@ export const adminsAPI = {
   },
 
   updatePermissions: async (id, permissions) => {
-    const { data } = await api.patch(
-      ENDPOINTS.admins.updatePermissions(id),
-      { permissions },
-    );
+    const { data } = await api.patch(ENDPOINTS.admins.updatePermissions(id), {
+      permissions,
+    });
     return data;
   },
 

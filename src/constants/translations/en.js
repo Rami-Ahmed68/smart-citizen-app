@@ -5,11 +5,7 @@ import auth from "./english/auth";
 import toast from "./english/toast";
 import logout from "./english/logOut";
 import addAdmin from "./english/addAdmin";
-// import settings from "./english/settings";
-// import common from "./english/common";
-// import citizens from "./english/citizens";
-// import admins from "./english/admins";
-// import auth from "./english/auth";
+import adminsList from "./english/adminsList";
 
 const en = {
   navbar,
@@ -18,11 +14,7 @@ const en = {
   toast,
   logout,
   addAdmin,
-  //   settings,
-  //   common,
-  //   citizens,
-  //   admins,
-  //   auth,
+  adminsList,
 };
 
 export default en;

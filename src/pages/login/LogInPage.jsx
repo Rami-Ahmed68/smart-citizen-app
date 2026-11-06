@@ -208,7 +208,12 @@ export default function LoginPage() {
         </VStack>
       </Box>
 
-      <Flex flex="1" align="center" justify="center" p={{ base: 6, md: 12 }}>
+      <Flex
+        bg="bg-body"
+        flex="1"
+        align="center"
+        justify="center"
+        p={{ base: 6, md: 12 }}>
         <Box w="100%" maxW="420px">
           <VStack spacing={8} align="stretch">
             <VStack

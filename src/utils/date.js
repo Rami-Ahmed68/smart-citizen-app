@@ -1,3 +1,5 @@
+// src/utils/date.js
+
 export function getToday() {
   return new Date();
 }
@@ -84,4 +86,12 @@ export function daysBetween(dateA, dateB = new Date()) {
   const MS_PER_DAY = 1000 * 60 * 60 * 24;
   const diff = Math.abs(dateA.getTime() - dateB.getTime());
   return Math.floor(diff / MS_PER_DAY);
+}
+
+export function formatDate(date = new Date(), locale = "ar-SY") {
+  return new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
 }

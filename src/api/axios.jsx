@@ -78,6 +78,9 @@ api.interceptors.response.use(
         response.config.url
       }`,
     );
+
+    devLog("📦 data:", response.data);
+
     return response;
   },
   (error) => {
