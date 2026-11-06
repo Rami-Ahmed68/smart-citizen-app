@@ -1,3 +1,5 @@
+// src/constants/translations/ar/auth.js
+
 const auth = {
   welcomeBack: "مرحبًا بعودتك",
   loginSubtitle: "سجّل دخولك للمتابعة إلى المنصة",
@@ -20,6 +22,9 @@ const auth = {
   securityFooter: "محمي بتشفير TLS 1.3 · جميع المحاولات مسجلة",
   secureAdminPortal: "بوابة إدارية آمنة",
   emblemAlt: "شعار الجمهورية العربية السورية",
+
+  checkingSession: "جارٍ التحقق من الجلسة…",
+  checkingSessionHint: "لحظات قليلة فقط",
 };
 
 export default auth;

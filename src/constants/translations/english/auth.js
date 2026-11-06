@@ -1,3 +1,5 @@
+// src/constants/translations/en/auth.js
+
 const auth = {
   welcomeBack: "Welcome back",
   loginSubtitle: "Sign in to continue to the platform",
@@ -16,10 +18,13 @@ const auth = {
   securePortal: "Secure Portal",
   heroDescription:
     "Smart Citizen platform — a secure, government-approved system for accessing citizen data and managing applications and services.",
-  copyright: " Smart Citizen · All Rights Reserved",
+  copyright: "Smart Citizen · All Rights Reserved",
   securityFooter: "Protected by TLS 1.3 encryption · All attempts logged",
   secureAdminPortal: "Secure Administrative Portal",
   emblemAlt: "Emblem of the Syrian Arab Republic",
+
+  checkingSession: "Verifying your session…",
+  checkingSessionHint: "Just a moment",
 };
 
 export default auth;
