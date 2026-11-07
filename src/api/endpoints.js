@@ -21,6 +21,12 @@ export const ENDPOINTS = {
     one: "/admin/one",
     create: "/admin/create",
     me: "/admin/me",
+
+    update_admin: "/admin/update-admin-data",
+
+    remove: "/admin/delete",
+    toggleStatus: "/admin/toggle-status",
+    changePassword: "/admin/change-password",
   },
 
   // ═══════════════════════════════════════════

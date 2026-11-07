@@ -103,7 +103,9 @@ export default function AdminCard({ admin }) {
   };
 
   const handleGoToProfile = () => {
-    if (admin?._id) navigate(`/admin/update/${admin._id}`);
+    if (admin?._id) navigate(`/admin/details/${admin._id}`);
+
+    console.log(`/admin/details/${admin._id}`);
   };
 
   return (

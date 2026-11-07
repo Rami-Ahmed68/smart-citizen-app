@@ -6,6 +6,7 @@ import toast from "./english/toast";
 import logout from "./english/logOut";
 import addAdmin from "./english/addAdmin";
 import adminsList from "./english/adminsList";
+import adminDetails from "./english/adminDetails";
 
 const en = {
   navbar,
@@ -15,6 +16,7 @@ const en = {
   logout,
   addAdmin,
   adminsList,
+  adminDetails,
 };
 
 export default en;

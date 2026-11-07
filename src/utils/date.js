@@ -95,3 +95,9 @@ export function formatDate(date = new Date(), locale = "ar-SY") {
     day: "numeric",
   }).format(date);
 }
+
+export function toISOString(value) {
+  if (!value) return null;
+  const d = value instanceof Date ? value : new Date(value);
+  return isNaN(d.getTime()) ? null : d.toISOString();
+}

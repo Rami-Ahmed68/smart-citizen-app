@@ -1,34 +1,35 @@
+// src/i18n/locales/ar/adminsList.js
 const arAdminsList = {
-  pageTitle: "إدارة المسؤولين",
-  pageSubtitle: "عرض وإدارة جميع حسابات المسؤولين في النظام",
+  pageTitle: "إدارة الأدمن",
+  pageSubtitle: "عرض وإدارة جميع حسابات الأدمن في النظام",
   youAre: "أنت",
-  roleSuper: "مسؤول أعلى",
-  roleAdmin: "مسؤول",
+  roleSuper: "أدمن أعلى",
+  roleAdmin: "أدمن",
 
-  statTotal: "إجمالي المسؤولين",
+  statTotal: "إجمالي الأدمن",
   statActive: "حسابات نشطة",
-  statSuper: "مسؤولون أعلى",
+  statSuper: "أدمن أعلى",
   statInactive: "حسابات معطّلة",
 
   searchPlaceholder: "ابحث بالاسم أو البريد الإلكتروني...",
   searchButton: "بحث",
   clearSearch: "مسح البحث",
   refresh: "تحديث",
-  addNew: "إضافة مسؤول جديد",
+  addNew: "إضافة أدمن جديد",
 
   filterAll: "الكل",
   filterActive: "نشط",
   filterInactive: "معطّل",
-  filterSuper: "مسؤول أعلى",
-  filterAdmin: "مسؤول",
+  filterSuper: "أدمن أعلى",
+  filterAdmin: "أدمن",
 
   statusActive: "نشط",
   statusInactive: "معطّل",
 
-  emptyTitle: "لا يوجد مسؤولون",
-  emptyHint: "لم يُنشأ أي حساب مسؤول بعد. ابدأ بإضافة أول مسؤول.",
+  emptyTitle: "لا يوجد أدمن",
+  emptyHint: "لم يُنشأ أي حساب أدمن بعد. ابدأ بإضافة أول أدمن.",
   emptyFilterTitle: "لا توجد نتائج",
-  emptyFilterHint: "لم يُعثر على أي مسؤول يطابق بحثك.",
+  emptyFilterHint: "لم يُعثر على أي أدمن يطابق بحثك.",
   noResults: "لا توجد نتائج للبحث",
 
   actionsView: "عرض",
@@ -38,6 +39,7 @@ const arAdminsList = {
   actionsRetry: "إعادة المحاولة",
 
   expandRow: "عرض التفاصيل",
+  collapseRow: "إغلاق التفاصيل",
   detailFirstName: "الاسم الأول",
   detailLastName: "اسم العائلة",
   detailGender: "الجنس",
@@ -64,19 +66,22 @@ const arAdminsList = {
   next: "التالي",
   itemsPerPage: "لكل صفحة",
 
-  deleteTitle: "حذف المسؤول",
+  deleteTitle: "حذف الأدمن",
   deleteBody: "سيتم حذف هذا الحساب نهائيًا ولا يمكن التراجع. هل أنت متأكد؟",
   deleteConfirm: "نعم، احذف",
   deleteCancel: "إلغاء",
-  deleteSuccess: "تم حذف المسؤول بنجاح",
-  deleteError: "تعذر حذف المسؤول",
+  deleteSuccess: "تم حذف الأدمن بنجاح",
+  deleteError: "تعذر حذف الأدمن",
   deleting: "جارٍ الحذف...",
 
   toggleSuccess: "تم تحديث حالة الحساب",
   toggleError: "تعذر تحديث حالة الحساب",
 
   endOfList: "وصلت إلى نهاية القائمة",
-  errorLoad: "تعذر تحميل قائمة المسؤولين",
+  errorLoad: "تعذر تحميل قائمة الأدمن",
+
+  searchEmpty: "أدخل كلمة للبحث",
+  searchEmptyHint: "لا يمكن البحث بحقل فارغ",
 };
 
 export default arAdminsList;

@@ -1,10 +1,11 @@
+// src/i18n/locales/ar/addAdmin.js
 const addAdmin = {
-  pageTitle: "إضافة مسؤول جديد",
-  pageSubtitle: "إنشاء حساب مسؤول جديد",
+  pageTitle: "إضافة أدمن جديد",
+  pageSubtitle: "إنشاء حساب أدمن جديد",
 
   youAre: "أنت",
-  roleAdmin: "مسؤول",
-  roleSuper: "مسؤول أعلى",
+  roleAdmin: "أدمن",
+  roleSuper: "أدمن أعلى",
 
   sectionPersonal: "المعلومات الشخصية",
   sectionAccount: "بيانات الحساب",
@@ -31,7 +32,7 @@ const addAdmin = {
   passwordMismatch: "كلمتا المرور غير متطابقتين",
 
   infoNote:
-    "سيُنشأ الحساب بدور «مسؤول» وحالة نشطة، مع صلاحية قراءة افتراضية. تُعيَّن الصورة تلقائيًا حسب الجنس.",
+    "سيُنشأ الحساب بدور «أدمن» وحالة نشطة، مع صلاحية قراءة افتراضية. تُعيَّن الصورة تلقائيًا حسب الجنس.",
 
   showPassword: "إظهار كلمة المرور",
   hidePassword: "إخفاء كلمة المرور",
@@ -41,7 +42,7 @@ const addAdmin = {
   cancel: "إلغاء",
 
   successTitle: "تم إنشاء الحساب",
-  successDesc: "تمت إضافة المسؤول الجديد بنجاح",
+  successDesc: "تمت إضافة الأدمن الجديد بنجاح",
 
   birthDateRequired: "تاريخ الميلاد مطلوب",
   phoneInvalid: "رقم الهاتف يجب أن يكون من ٧ إلى ١٥ رقمًا",

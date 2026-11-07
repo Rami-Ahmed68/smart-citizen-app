@@ -20,6 +20,11 @@ const LogOutPage = lazy(() => import("../pages/logOutPage/LogOutPage.jsx"));
 const InstallAppPage = lazy(
   () => import("../pages/install/InstallAppPage.jsx"),
 );
+
+const AdminDetailsPage = lazy(
+  () => import("../pages/adminDetails/adminDetails.jsx"),
+);
+
 const NotFoundPage = lazy(
   () => import("../pages/NotFoundPage/NotFoundPage.jsx"),
 );
@@ -147,6 +152,15 @@ const AppRoutes = () => {
           element={
             <ProtectedPage>
               <InstallAppPage />
+            </ProtectedPage>
+          }
+        />
+
+        <Route
+          path="/admin/details/:target_id"
+          element={
+            <ProtectedPage>
+              <AdminDetailsPage />
             </ProtectedPage>
           }
         />

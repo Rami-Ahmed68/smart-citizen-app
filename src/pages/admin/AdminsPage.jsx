@@ -296,14 +296,16 @@ export default function AdminsPage() {
 
   const handleSearch = () => {
     const newSearch = searchInput.trim();
-    if (newSearch === search) {
-      pageRef.current = 0;
-      setHasMore(true);
-      setAdmins([]);
-      fetchPage(1, false);
-    } else {
-      setSearch(newSearch);
+
+    if (newSearch === "") {
+      appToast.warning(
+        t("adminsList.searchEmpty"),
+        t("adminsList.searchEmptyHint"),
+      );
+      return;
     }
+
+    setSearch(newSearch);
   };
 
   const handleClearSearch = () => {

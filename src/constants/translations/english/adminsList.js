@@ -39,6 +39,7 @@ const enAdminsList = {
   actionsRetry: "Retry",
 
   expandRow: "Show details",
+  collapseRow: "Hide details",
   detailFirstName: "First Name",
   detailLastName: "Last Name",
   detailGender: "Gender",
@@ -79,6 +80,9 @@ const enAdminsList = {
 
   endOfList: "You've reached the end of the list",
   errorLoad: "Failed to load admins list",
+
+  searchEmpty: "Enter a search term",
+  searchEmptyHint: "Search field is empty",
 };
 
 export default enAdminsList;

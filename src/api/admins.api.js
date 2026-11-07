@@ -8,9 +8,12 @@ export const adminsAPI = {
     return data;
   },
 
-  getById: async (id) => {
-    const { data } = await api.get(ENDPOINTS.admins.byId(id));
-    return data;
+  getById: async (target_id) => {
+    const { data } = await api.get(ENDPOINTS.admins.one, {
+      params: { target_id },
+    });
+    const payload = data?.data ?? data;
+    return payload?.admin ?? payload;
   },
 
   create: async (payload) => {
@@ -19,32 +22,32 @@ export const adminsAPI = {
   },
 
   update: async (id, payload) => {
-    const { data } = await api.patch(ENDPOINTS.admins.update(id), payload);
+    const { data } = await api.put(ENDPOINTS.admins.update_admin, {
+      target_id: id,
+      ...payload,
+    });
     return data;
   },
 
   remove: async (id) => {
-    const { data } = await api.delete(ENDPOINTS.admins.remove(id));
+    const { data } = await api.delete(ENDPOINTS.admins.remove, {
+      data: { target_id: id },
+    });
     return data;
   },
 
   toggleStatus: async (id) => {
-    const { data } = await api.patch(ENDPOINTS.admins.toggleStatus(id));
-    return data;
-  },
-
-  updatePermissions: async (id, permissions) => {
-    const { data } = await api.patch(ENDPOINTS.admins.updatePermissions(id), {
-      permissions,
+    const { data } = await api.put(ENDPOINTS.admins.toggleStatus, {
+      target_id: id,
     });
     return data;
   },
 
   changePassword: async (id, payload) => {
-    const { data } = await api.patch(
-      ENDPOINTS.admins.changePassword(id),
-      payload,
-    );
+    const { data } = await api.put(ENDPOINTS.admins.changePassword, {
+      target_id: id,
+      ...payload,
+    });
     return data;
   },
 
@@ -54,7 +57,7 @@ export const adminsAPI = {
   },
 
   updateMe: async (payload) => {
-    const { data } = await api.patch(ENDPOINTS.admins.me, payload);
+    const { data } = await api.put(ENDPOINTS.admins.me, payload);
     return data;
   },
 };
