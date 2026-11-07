@@ -7,6 +7,7 @@ import logout from "./english/logOut";
 import addAdmin from "./english/addAdmin";
 import adminsList from "./english/adminsList";
 import adminDetails from "./english/adminDetails";
+import profile from "./english/profile";
 
 const en = {
   navbar,
@@ -17,6 +18,7 @@ const en = {
   addAdmin,
   adminsList,
   adminDetails,
+  profile,
 };
 
 export default en;

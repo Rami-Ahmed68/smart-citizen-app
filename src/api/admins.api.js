@@ -43,21 +43,21 @@ export const adminsAPI = {
     return data;
   },
 
-  changePassword: async (id, payload) => {
-    const { data } = await api.put(ENDPOINTS.admins.changePassword, {
+  changeAdminPassword: async (id, payload) => {
+    const { data } = await api.put(ENDPOINTS.admins.changeAdminPassword, {
       target_id: id,
       ...payload,
     });
     return data;
   },
 
-  getMe: async () => {
-    const { data } = await api.get(ENDPOINTS.admins.me);
+  changeMyPassword: async (payload) => {
+    const { data } = await api.put(ENDPOINTS.admins.changeMyPassword, payload);
     return data;
   },
 
   updateMe: async (payload) => {
-    const { data } = await api.put(ENDPOINTS.admins.me, payload);
+    const { data } = await api.put(ENDPOINTS.admins.update_my, payload);
     return data;
   },
 };

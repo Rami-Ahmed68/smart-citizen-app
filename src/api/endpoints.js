@@ -23,10 +23,12 @@ export const ENDPOINTS = {
     me: "/admin/me",
 
     update_admin: "/admin/update-admin-data",
+    update_my: "/admin/update-my-data",
 
     remove: "/admin/delete",
     toggleStatus: "/admin/toggle-status",
-    changePassword: "/admin/change-password",
+    changeMyPassword: "/admin/change-my-password",
+    changeAdminPassword: "/admin/change-admin-password",
   },
 
   // ═══════════════════════════════════════════

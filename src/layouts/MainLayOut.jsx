@@ -1,14 +1,12 @@
 // src/layouts/MainLayOut.jsx
 import { useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
-import { useAuth } from "../auth/AuthContext";
 import { Outlet } from "react-router-dom";
 import NavBar from "../components/common/NavBar";
 import SidBar from "../components/common/SidBar";
 
 export default function MainLayOut({ role = "user" }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const { isAuthenticated } = useAuth();
 
   return (
     <Flex direction="column" h="100vh">

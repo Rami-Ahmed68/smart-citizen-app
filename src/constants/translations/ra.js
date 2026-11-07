@@ -7,6 +7,7 @@ import logout from "./arabic/logOut";
 import addAdmin from "./arabic/addAdmin";
 import adminsList from "./arabic/adminsList";
 import adminDetails from "./arabic/adminDetails";
+import profile from "./arabic/profile";
 
 const ar = {
   navbar,
@@ -17,6 +18,7 @@ const ar = {
   addAdmin,
   adminsList,
   adminDetails,
+  profile,
 };
 
 export default ar;

@@ -25,6 +25,8 @@ const AdminDetailsPage = lazy(
   () => import("../pages/adminDetails/adminDetails.jsx"),
 );
 
+const ProfilePage = lazy(() => import("../pages/Profile/ProfilePage.jsx"));
+
 const NotFoundPage = lazy(
   () => import("../pages/NotFoundPage/NotFoundPage.jsx"),
 );
@@ -161,6 +163,15 @@ const AppRoutes = () => {
           element={
             <ProtectedPage>
               <AdminDetailsPage />
+            </ProtectedPage>
+          }
+        />
+
+        <Route
+          path="/profile/:admin_id"
+          element={
+            <ProtectedPage>
+              <ProfilePage />
             </ProtectedPage>
           }
         />

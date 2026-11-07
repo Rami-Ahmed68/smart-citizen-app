@@ -31,6 +31,26 @@ import {
 import { useTranslation } from "react-i18next";
 import { formatNumeric } from "../../utils/date";
 
+/* ─── Avatar URL builder (env-driven) ─── */
+const RAW_API_URL = process.env.REACT_APP_API_URL || "";
+const RAW_ADMIN_AVATAR_PATH =
+  process.env.REACT_APP_ADMIN_AVATAR_PATH || "/uploads/admins";
+
+const API_URL = RAW_API_URL.replace(/\/+$/, "");
+const ADMIN_AVATAR_PATH = RAW_ADMIN_AVATAR_PATH.replace(/^\/+|\/+$/g, "");
+
+function buildAdminAvatarUrl(filename) {
+  if (!filename || typeof filename !== "string") return undefined;
+  if (/^https?:\/\//i.test(filename)) return filename;
+  if (!API_URL) return undefined;
+
+  const cleanFile = filename.replace(/^\/+/, "");
+
+  return ADMIN_AVATAR_PATH
+    ? `${API_URL}/${ADMIN_AVATAR_PATH}/${cleanFile}`
+    : `${API_URL}/${cleanFile}`;
+}
+
 const ROLE_BADGE = {
   super: { colorScheme: "purple", labelKey: "adminsList.roleSuper" },
   admin: { colorScheme: "blue", labelKey: "adminsList.roleAdmin" },
@@ -98,14 +118,14 @@ export default function AdminCard({ admin }) {
       ? admin.permissions.join(" · ")
       : t("adminsList.noPermissions");
 
+  const avatarUrl = buildAdminAvatarUrl(admin?.avatar);
+
   const handleToggleExpand = () => {
     setIsExpanded((prev) => !prev);
   };
 
   const handleGoToProfile = () => {
     if (admin?._id) navigate(`/admin/details/${admin._id}`);
-
-    console.log(`/admin/details/${admin._id}`);
   };
 
   return (
@@ -140,7 +160,7 @@ export default function AdminCard({ admin }) {
               name={fullName}
               onClick={handleGoToProfile}
               cursor="pointer"
-              src={admin?.avatar}
+              src={avatarUrl}
               bg={isSuper ? "purple.500" : "syria.green.mid"}
               color="white"
               sx={{

@@ -24,31 +24,6 @@ import {
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../auth/AuthContext";
 
-const labels = {
-  ar: {
-    dashboard: "لوحة التحكم",
-    citizens: "المواطنون",
-    addCitizen: "إضافة مواطن",
-    admins: "المسؤولون",
-    addAdmin: "إضافة مسؤول",
-    installApp: "تثبيت التطبيق",
-    profile: "الحساب الشخصي",
-    logout: "تسجيل الخروج",
-    brand: "المواطن الذكي",
-  },
-  en: {
-    dashboard: "Dashboard",
-    citizens: "Citizens",
-    addCitizen: "Add Citizen",
-    admins: "Admins",
-    addAdmin: "Add Admin",
-    installApp: "Install App",
-    profile: "My Profile",
-    logout: "Logout",
-    brand: "Smart Citizen",
-  },
-};
-
 const links = [
   {
     to: "/",
@@ -94,15 +69,38 @@ const links = [
   },
 ];
 
+function NavItem({ to, label, icon: Icon, isLogout = false, onNavigate }) {
+  return (
+    <NavLink to={to} end onClick={onNavigate}>
+      {({ isActive }) => (
+        <Box
+          display="flex"
+          alignItems="center"
+          gap="3"
+          px="3"
+          py="2"
+          rounded="md"
+          fontWeight={isActive ? "semibold" : "normal"}
+          bg={isActive ? (isLogout ? "red.500" : "brand.500") : "transparent"}
+          color={isActive ? "white" : isLogout ? "red.500" : "inherit"}
+          _hover={{
+            bg: isActive ? (isLogout ? "red.600" : "brand.600") : "bg-input",
+          }}
+          transition="background 0.15s ease">
+          <Icon />
+          {label}
+        </Box>
+      )}
+    </NavLink>
+  );
+}
+
 function SidBarLinks({ onNavigate }) {
-  const { admin } = useAuth();
-  const { i18n } = useTranslation();
+  const { admin: currentAdmin } = useAuth();
+  const { t } = useTranslation();
 
-  const lang = i18n.language === "ar" ? "ar" : "en";
-  const text = labels[lang];
-
-  const userRole = admin?.role;
-  const userPermissions = admin?.permissions || [];
+  const userRole = currentAdmin?.role;
+  const userPermissions = currentAdmin?.permissions || [];
 
   const visibleLinks = links.filter((link) => {
     if (userRole === "super") return true;
@@ -117,90 +115,55 @@ function SidBarLinks({ onNavigate }) {
 
   return (
     <Stack spacing="1">
-      {visibleLinks.map(({ to, labelKey, icon: Icon }) => (
-        <NavLink key={to} to={to} end onClick={onNavigate}>
-          {({ isActive }) => (
-            <Box
-              display="flex"
-              alignItems="center"
-              gap="3"
-              px="3"
-              py="2"
-              rounded="md"
-              fontWeight={isActive ? "semibold" : "normal"}
-              bg={isActive ? "brand.500" : "transparent"}
-              color={isActive ? "white" : "inherit"}
-              _hover={{ bg: isActive ? "brand.600" : "bg-hover" }}>
-              <Icon />
-              {text[labelKey]}
-            </Box>
-          )}
-        </NavLink>
+      {visibleLinks.map(({ to, labelKey, icon }) => (
+        <NavItem
+          key={to}
+          to={to}
+          label={t(`sidbar.${labelKey}`)}
+          icon={icon}
+          onNavigate={onNavigate}
+        />
       ))}
     </Stack>
   );
 }
 
 function SidBarFooter({ onNavigate }) {
-  const { i18n } = useTranslation();
+  const { admin: currentAdmin } = useAuth();
+  const { t } = useTranslation();
 
-  const lang = i18n.language === "ar" ? "ar" : "en";
-  const text = labels[lang];
+  const profileTo = currentAdmin?._id
+    ? `/profile/${currentAdmin._id}`
+    : "/profile";
 
   return (
     <Stack spacing="1">
       <Divider borderColor="border-color" mb={2} />
 
-      <NavLink to="/profile" end onClick={onNavigate}>
-        {({ isActive }) => (
-          <Box
-            display="flex"
-            alignItems="center"
-            gap="3"
-            px="3"
-            py="2"
-            rounded="md"
-            fontWeight={isActive ? "semibold" : "normal"}
-            bg={isActive ? "brand.500" : "transparent"}
-            color={isActive ? "white" : "inherit"}
-            _hover={{ bg: isActive ? "brand.600" : "bg-hover" }}>
-            <LuUser />
-            {text.profile}
-          </Box>
-        )}
-      </NavLink>
+      <NavItem
+        to={profileTo}
+        label={t("sidbar.profile")}
+        icon={LuUser}
+        onNavigate={onNavigate}
+      />
 
-      <NavLink to="/logout" end onClick={onNavigate}>
-        {({ isActive }) => (
-          <Box
-            display="flex"
-            alignItems="center"
-            gap="3"
-            px="3"
-            py="2"
-            rounded="md"
-            fontWeight={isActive ? "semibold" : "normal"}
-            bg={isActive ? "red.500" : "transparent"}
-            color={isActive ? "white" : "red.500"}
-            _hover={{ bg: "red.50", _dark: { bg: "red.900" } }}>
-            <LuLogOut />
-            {text.logout}
-          </Box>
-        )}
-      </NavLink>
+      <NavItem
+        to="/logout"
+        label={t("sidbar.logout")}
+        icon={LuLogOut}
+        onNavigate={onNavigate}
+        isLogout
+      />
     </Stack>
   );
 }
 
 export default function SidBar({ open, onClose }) {
-  const { i18n } = useTranslation();
-  const lang = i18n.language === "ar" ? "ar" : "en";
-  const text = labels[lang];
+  const { t, i18n } = useTranslation();
   const placement = i18n.language === "ar" ? "right" : "left";
 
   return (
     <>
-      {/* ─── سايدبار الديسكتوب ─── */}
       <Box
         as="nav"
         display={{ base: "none", md: "flex" }}
@@ -220,12 +183,11 @@ export default function SidBar({ open, onClose }) {
         </Box>
       </Box>
 
-      {/* ─── درج الجوال ─── */}
       <Drawer placement={placement} isOpen={open} onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent bg="bg-sid-bar">
           <DrawerCloseButton />
-          <DrawerHeader>{text.brand}</DrawerHeader>
+          <DrawerHeader>{t("sidbar.brand")}</DrawerHeader>
           <DrawerBody display="flex" flexDirection="column" pb={4}>
             <Box flex="1">
               <SidBarLinks onNavigate={onClose} />

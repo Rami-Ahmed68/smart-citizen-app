@@ -57,6 +57,26 @@ import { useAppToast } from "../../components/common/AppToast";
 import { formatNumeric } from "../../utils/date";
 import DeleteAdminDialog from "../../components/common/DeleteAdminDialog";
 
+/* ─── Avatar URL builder (env-driven) ─── */
+const RAW_API_URL = process.env.REACT_APP_API_URL || "";
+const RAW_ADMIN_AVATAR_PATH =
+  process.env.REACT_APP_ADMIN_AVATAR_PATH || "/uploads/admins";
+
+const API_URL = RAW_API_URL.replace(/\/+$/, "");
+const ADMIN_AVATAR_PATH = RAW_ADMIN_AVATAR_PATH.replace(/^\/+|\/+$/g, "");
+
+function buildAdminAvatarUrl(filename) {
+  if (!filename || typeof filename !== "string") return undefined;
+  if (/^https?:\/\//i.test(filename)) return filename;
+  if (!API_URL) return undefined;
+
+  const cleanFile = filename.replace(/^\/+/, "");
+
+  return ADMIN_AVATAR_PATH
+    ? `${API_URL}/${ADMIN_AVATAR_PATH}/${cleanFile}`
+    : `${API_URL}/${cleanFile}`;
+}
+
 const ROLE_STYLE = {
   super: { bg: "syria.umber.mid", labelKey: "adminDetails.roleSuper" },
   admin: { bg: "syria.green.mid", labelKey: "adminDetails.roleAdmin" },
@@ -308,6 +328,8 @@ export default function AdminDetailsPage() {
     admin?.email ||
     "—";
 
+  const avatarUrl = buildAdminAvatarUrl(admin?.avatar);
+
   const set = (field, value) =>
     setForm((prev) => ({ ...prev, [field]: value }));
 
@@ -408,7 +430,7 @@ export default function AdminDetailsPage() {
   };
 
   if (isSuperSelf) {
-    return <Navigate to="/profile" replace />;
+    return <Navigate to={`/profile/${currentAdmin._id}`} replace />;
   }
 
   if (isLoading) {
@@ -537,7 +559,7 @@ export default function AdminDetailsPage() {
               <Avatar
                 size="xl"
                 name={fullName}
-                src={admin?.avatar}
+                src={avatarUrl}
                 bg={
                   admin?.role === "super"
                     ? "syria.umber.mid"
