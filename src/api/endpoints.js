@@ -1,9 +1,7 @@
 // src/api/endpoints.js
 
 export const ENDPOINTS = {
-  // ═══════════════════════════════════════════
   // Authentication
-  // ═══════════════════════════════════════════
   auth: {
     login: "/admin/auth/log-in",
     logout: "/admin/auth/log-out",
@@ -13,9 +11,7 @@ export const ENDPOINTS = {
     changePassword: "/admin/auth/change-password",
   },
 
-  // ═══════════════════════════════════════════
   // Admins
-  // ═══════════════════════════════════════════
   admins: {
     all: "/admin/all",
     one: "/admin/one",
@@ -31,32 +27,24 @@ export const ENDPOINTS = {
     changeAdminPassword: "/admin/change-admin-password",
   },
 
-  // ═══════════════════════════════════════════
   // Citizens
-  // ═══════════════════════════════════════════
   citizens: {
-    base: "/citizen",
-    list: "/citizen",
-    create: "/citizen",
-    byId: (id) => `/citizen/${id}`,
-    update: (id) => `/citizen/${id}`,
-    remove: (id) => `/citizen/${id}`,
-    toggleStatus: (id) => `/citizen/${id}/status`,
-    search: "/citizen/search",
+    all: "/citizen/all",
+    one: "/citizen/one",
+    create: "/citizen/create",
+    update: "/citizen/update-citizen-data",
+    remove: "/citizen/delete",
+    toggleStatus: "/citizen/toggle-status",
   },
 
-  // ═══════════════════════════════════════════
   // Dashboard
-  // ═══════════════════════════════════════════
   dashboard: {
     stats: "/dashboard/stats",
     recentActivity: "/dashboard/activity",
     charts: "/dashboard/charts",
   },
 
-  // ═══════════════════════════════════════════
   // Notifications
-  // ═══════════════════════════════════════════
   notifications: {
     list: "/notifications",
     markAsRead: (id) => `/notifications/${id}/read`,
@@ -65,9 +53,7 @@ export const ENDPOINTS = {
     unreadCount: "/notifications/unread-count",
   },
 
-  // ═══════════════════════════════════════════
   // Files / Upload
-  // ═══════════════════════════════════════════
   files: {
     upload: "/files/upload",
     uploadMultiple: "/files/upload-multiple",

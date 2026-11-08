@@ -8,6 +8,7 @@ import addAdmin from "./english/addAdmin";
 import adminsList from "./english/adminsList";
 import adminDetails from "./english/adminDetails";
 import profile from "./english/profile";
+import citizens from "./english/citizens";
 
 const en = {
   navbar,
@@ -19,6 +20,7 @@ const en = {
   adminsList,
   adminDetails,
   profile,
+  citizens,
 };
 
 export default en;

@@ -21,6 +21,7 @@ import {
   SimpleGrid,
   Spinner,
   Text,
+  Tooltip,
   VStack,
 } from "@chakra-ui/react";
 import {
@@ -464,6 +465,8 @@ export default function ProfilePage() {
 
   const admin = fetchedAdmin ?? currentAdmin;
   const isSuper = admin?.role === "super";
+  const canEdit = isSuper;
+  const canChangePassword = isSuper;
   const accentColor = isSuper ? "syria.umber.mid" : "syria.green.mid";
 
   const tPermission = (perm) => {
@@ -488,6 +491,11 @@ export default function ProfilePage() {
     setPasswordForm((p) => ({ ...p, [field]: value }));
 
   const handleSave = async () => {
+    if (!canEdit) {
+      appToast.error(t("profile.editRestricted"));
+      return;
+    }
+
     setIsSaving(true);
     try {
       const payload = {};
@@ -556,6 +564,12 @@ export default function ProfilePage() {
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
+
+    if (!canChangePassword) {
+      appToast.error(t("profile.passwordRestricted"));
+      return;
+    }
+
     if (isChangingPassword) return;
 
     const { current_password, new_password, confirm_new_password } =
@@ -763,54 +777,80 @@ export default function ProfilePage() {
       </SimpleGrid>
 
       <SimpleGrid columns={{ base: 1, lg: 12 }} spacing={5}>
+        {/* 01. Personal Info */}
         <GridItem colSpan={{ base: 1, lg: 7 }}>
           <PremiumSection
             number={1}
             icon={LuUser}
             title={t("adminDetails.personalInfo")}
             accent={SECTION_ACCENT.personal}>
-            <Flex justify="flex-end" mb={4} gap={2}>
-              {!isEditing ? (
-                <Button
-                  size="sm"
-                  colorScheme="success"
-                  leftIcon={<LuPencil size={14} />}
-                  onClick={() => setIsEditing(true)}
-                  rounded="md">
-                  {t("adminDetails.edit")}
-                </Button>
-              ) : (
-                <>
-                  <Button
-                    size="sm"
-                    colorScheme="error"
-                    variant="outline"
-                    leftIcon={<LuX size={14} />}
-                    onClick={handleCancelEdit}
-                    isDisabled={isSaving}
-                    rounded="md">
-                    {t("adminDetails.cancelEdit")}
-                  </Button>
+            {canEdit ? (
+              <Flex justify="flex-end" mb={4} gap={2}>
+                {!isEditing ? (
                   <Button
                     size="sm"
                     colorScheme="success"
-                    leftIcon={<LuCircleCheck size={14} />}
-                    onClick={handleSave}
-                    isLoading={isSaving}
-                    loadingText={t("adminDetails.saving")}
+                    leftIcon={<LuPencil size={14} />}
+                    onClick={() => setIsEditing(true)}
                     rounded="md">
-                    {t("adminDetails.save")}
+                    {t("adminDetails.edit")}
                   </Button>
-                </>
-              )}
-            </Flex>
+                ) : (
+                  <>
+                    <Button
+                      size="sm"
+                      colorScheme="error"
+                      variant="outline"
+                      leftIcon={<LuX size={14} />}
+                      onClick={handleCancelEdit}
+                      isDisabled={isSaving}
+                      rounded="md">
+                      {t("adminDetails.cancelEdit")}
+                    </Button>
+                    <Button
+                      size="sm"
+                      colorScheme="success"
+                      leftIcon={<LuCircleCheck size={14} />}
+                      onClick={handleSave}
+                      isLoading={isSaving}
+                      loadingText={t("adminDetails.saving")}
+                      rounded="md">
+                      {t("adminDetails.save")}
+                    </Button>
+                  </>
+                )}
+              </Flex>
+            ) : (
+              <Flex justify="flex-end" mb={4}>
+                <Tooltip
+                  label={t("profile.editRestricted")}
+                  placement="top"
+                  hasArrow>
+                  <Badge
+                    colorScheme="gray"
+                    variant="subtle"
+                    fontSize="2xs"
+                    rounded="sm"
+                    px={2.5}
+                    py={1}
+                    textTransform="none"
+                    fontWeight="medium"
+                    display="inline-flex"
+                    alignItems="center"
+                    gap={1.5}>
+                    <Icon as={LuLock} boxSize={3} />
+                    {t("profile.readOnly")}
+                  </Badge>
+                </Tooltip>
+              </Flex>
+            )}
 
             <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4}>
               <DetailField
                 icon={LuUser}
                 label={t("adminDetails.detailFirstName")}
                 value={admin?.first_name}
-                isEditing={isEditing}>
+                isEditing={isEditing && canEdit}>
                 <Input
                   size="sm"
                   value={form.first_name}
@@ -824,7 +864,7 @@ export default function ProfilePage() {
                 icon={LuUser}
                 label={t("adminDetails.detailLastName")}
                 value={admin?.last_name}
-                isEditing={isEditing}>
+                isEditing={isEditing && canEdit}>
                 <Input
                   size="sm"
                   value={form.last_name}
@@ -838,7 +878,7 @@ export default function ProfilePage() {
                 icon={LuPhone}
                 label={t("adminDetails.detailPhone")}
                 value={admin?.phone_number}
-                isEditing={isEditing}>
+                isEditing={isEditing && canEdit}>
                 <InputGroup size="sm">
                   <InputLeftElement pointerEvents="none">
                     <Icon as={LuPhone} color="text-muted" boxSize={4} />
@@ -864,7 +904,7 @@ export default function ProfilePage() {
                     ? formatNumeric(new Date(admin.birth_date))
                     : "—"
                 }
-                isEditing={isEditing}>
+                isEditing={isEditing && canEdit}>
                 <Input
                   type="date"
                   size="sm"
@@ -909,6 +949,7 @@ export default function ProfilePage() {
           </PremiumSection>
         </GridItem>
 
+        {/* 02. Account Info */}
         <GridItem colSpan={{ base: 1, lg: 5 }}>
           <PremiumSection
             number={2}
@@ -963,63 +1004,105 @@ export default function ProfilePage() {
           </PremiumSection>
         </GridItem>
 
+        {/* 03. Security / Password */}
         <GridItem colSpan={{ base: 1, lg: 5 }}>
           <PremiumSection
             number={3}
             icon={LuLock}
             title={t("profile.passwordSection")}
             accent={SECTION_ACCENT.security}>
-            <form onSubmit={handleChangePassword}>
-              <VStack spacing={3} align="stretch">
-                <PasswordField
-                  icon={LuLock}
-                  label={t("profile.currentPassword")}
-                  value={passwordForm.current_password}
-                  onChange={(e) => setPwd("current_password", e.target.value)}
-                  visible={showCurrent}
-                  onToggle={() => setShowCurrent((s) => !s)}
-                />
-                <PasswordField
-                  icon={LuKeyRound}
-                  label={t("profile.newPassword")}
-                  value={passwordForm.new_password}
-                  onChange={(e) => setPwd("new_password", e.target.value)}
-                  visible={showNew}
-                  onToggle={() => setShowNew((s) => !s)}
-                />
-                <PasswordField
-                  icon={LuKeyRound}
-                  label={t("profile.confirmPassword")}
-                  value={passwordForm.confirm_new_password}
-                  onChange={(e) =>
-                    setPwd("confirm_new_password", e.target.value)
-                  }
-                  visible={showConfirm}
-                  onToggle={() => setShowConfirm((s) => !s)}
-                />
+            {canChangePassword ? (
+              <form onSubmit={handleChangePassword}>
+                <VStack spacing={3} align="stretch">
+                  <PasswordField
+                    icon={LuLock}
+                    label={t("profile.currentPassword")}
+                    value={passwordForm.current_password}
+                    onChange={(e) => setPwd("current_password", e.target.value)}
+                    visible={showCurrent}
+                    onToggle={() => setShowCurrent((s) => !s)}
+                  />
+                  <PasswordField
+                    icon={LuKeyRound}
+                    label={t("profile.newPassword")}
+                    value={passwordForm.new_password}
+                    onChange={(e) => setPwd("new_password", e.target.value)}
+                    visible={showNew}
+                    onToggle={() => setShowNew((s) => !s)}
+                  />
+                  <PasswordField
+                    icon={LuKeyRound}
+                    label={t("profile.confirmPassword")}
+                    value={passwordForm.confirm_new_password}
+                    onChange={(e) =>
+                      setPwd("confirm_new_password", e.target.value)
+                    }
+                    visible={showConfirm}
+                    onToggle={() => setShowConfirm((s) => !s)}
+                  />
 
-                <Button
-                  type="submit"
-                  size="sm"
-                  colorScheme="success"
-                  leftIcon={<LuLock size={14} />}
-                  isLoading={isChangingPassword}
-                  loadingText={t("profile.changing")}
-                  isDisabled={
-                    !passwordForm.current_password ||
-                    !passwordForm.new_password ||
-                    !passwordForm.confirm_new_password
-                  }
+                  <Button
+                    type="submit"
+                    size="sm"
+                    colorScheme="success"
+                    leftIcon={<LuLock size={14} />}
+                    isLoading={isChangingPassword}
+                    loadingText={t("profile.changing")}
+                    isDisabled={
+                      !passwordForm.current_password ||
+                      !passwordForm.new_password ||
+                      !passwordForm.confirm_new_password
+                    }
+                    rounded="md"
+                    mt={2}
+                    w="full">
+                    {t("profile.changePassword")}
+                  </Button>
+                </VStack>
+              </form>
+            ) : (
+              <VStack spacing={3} align="stretch" py={2}>
+                <Flex
+                  align="center"
+                  gap={3}
+                  p={4}
                   rounded="md"
-                  mt={2}
-                  w="full">
-                  {t("profile.changePassword")}
-                </Button>
+                  bg="bg-input"
+                  borderWidth="1px"
+                  borderColor="border-color">
+                  <Flex
+                    align="center"
+                    justify="center"
+                    w={10}
+                    h={10}
+                    rounded="md"
+                    bg="warning.500"
+                    color="white"
+                    flexShrink={0}>
+                    <Icon as={LuLock} boxSize={5} />
+                  </Flex>
+                  <VStack align="start" spacing={0.5} flex="1" minW={0}>
+                    <Text
+                      fontSize="sm"
+                      fontWeight="semibold"
+                      color="text-primary">
+                      {t("profile.passwordRestrictedTitle")}
+                    </Text>
+                    <Text fontSize="xs" color="text-muted">
+                      {t("profile.passwordRestricted")}
+                    </Text>
+                  </VStack>
+                </Flex>
+
+                <Text fontSize="xs" color="text-muted" fontStyle="italic">
+                  {t("profile.passwordRestrictedHint")}
+                </Text>
               </VStack>
-            </form>
+            )}
           </PremiumSection>
         </GridItem>
 
+        {/* 04. Permissions */}
         <GridItem colSpan={{ base: 1, lg: 7 }}>
           <PremiumSection
             number={4}

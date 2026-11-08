@@ -8,6 +8,7 @@ import addAdmin from "./arabic/addAdmin";
 import adminsList from "./arabic/adminsList";
 import adminDetails from "./arabic/adminDetails";
 import profile from "./arabic/profile";
+import citizens from "./arabic/citizens";
 
 const ar = {
   navbar,
@@ -19,6 +20,7 @@ const ar = {
   adminsList,
   adminDetails,
   profile,
+  citizens,
 };
 
 export default ar;

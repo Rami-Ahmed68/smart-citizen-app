@@ -30,6 +30,13 @@ const arProfile = {
   sessionExpired: "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.",
   logoutAfterPasswordChange:
     "سيتم تسجيل خروجك من جميع الأجهزة بعد تغيير كلمة المرور.",
+
+  readOnly: "للعرض فقط",
+  editRestricted: "تعديل البيانات متاح للسوبر أدمن فقط",
+  passwordRestrictedTitle: "تغيير كلمة المرور مقيد",
+  passwordRestricted: "تغيير كلمة المرور متاح للسوبر أدمن فقط",
+  passwordRestrictedHint:
+    "لطلب تغيير كلمة المرور، يرجى التواصل مع السوبر أدمن.",
 };
 
 export default arProfile;

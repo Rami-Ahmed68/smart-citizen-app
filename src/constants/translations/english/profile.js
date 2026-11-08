@@ -33,6 +33,12 @@ const enProfile = {
   sessionExpired: "Session expired. Please log in again.",
   logoutAfterPasswordChange:
     "You will be logged out from all devices after changing your password.",
+  readOnly: "Read only",
+  editRestricted: "Editing data is restricted to the super admin",
+  passwordRestrictedTitle: "Password change restricted",
+  passwordRestricted: "Changing password is restricted to the super admin",
+  passwordRestrictedHint:
+    "To request a password change, please contact the super admin.",
 };
 
 export default enProfile;
