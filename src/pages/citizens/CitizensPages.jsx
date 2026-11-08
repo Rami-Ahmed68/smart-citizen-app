@@ -588,23 +588,9 @@ export default function CitizensPage() {
             rounded="md"
             shadow="sm"
             sx={{
-              bg: "success.500",
+              bg: "syria.green.mid",
+              _hover: { bg: "syria.green.dark", shadow: "md" },
               color: "white",
-              _hover: { bg: "success.600", shadow: "md" },
-              _active: { bg: "success.700" },
-              _focusVisible: {
-                boxShadow: "0 0 0 3px var(--chakra-colors-success-200)",
-              },
-              _disabled: { opacity: 0.7, cursor: "not-allowed" },
-              _dark: {
-                bg: "success.500",
-                color: "white",
-                _hover: { bg: "success.400" },
-                _active: { bg: "success.600" },
-                _focusVisible: {
-                  boxShadow: "0 0 0 3px var(--chakra-colors-success-800)",
-                },
-              },
             }}
             minW={{ base: "full", sm: "auto" }}>
             {t("citizens.refresh")}
@@ -619,22 +605,9 @@ export default function CitizensPage() {
                 rounded="md"
                 shadow="sm"
                 sx={{
-                  bg: "error.500",
+                  bg: "syria.umber.light",
+                  _hover: { bg: "syria.umber.mid", shadow: "md" },
                   color: "white",
-                  _hover: { bg: "error.600", shadow: "md" },
-                  _active: { bg: "error.700" },
-                  _focusVisible: {
-                    boxShadow: "0 0 0 3px var(--chakra-colors-error-200)",
-                  },
-                  _dark: {
-                    bg: "error.500",
-                    color: "white",
-                    _hover: { bg: "error.400" },
-                    _active: { bg: "error.600" },
-                    _focusVisible: {
-                      boxShadow: "0 0 0 3px var(--chakra-colors-error-800)",
-                    },
-                  },
                 }}
                 flex={{ base: 1, sm: "auto" }}>
                 {t("citizens.clearFilters")}
