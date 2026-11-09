@@ -32,32 +32,18 @@ export const ENDPOINTS = {
     all: "/citizen/all",
     one: "/citizen/one",
     create: "/citizen/create",
-    update: "/citizen/update-citizen-data",
+    update: "/citizen/update",
     remove: "/citizen/delete",
     toggleStatus: "/citizen/toggle-status",
   },
 
-  // Dashboard
-  dashboard: {
-    stats: "/dashboard/stats",
-    recentActivity: "/dashboard/activity",
-    charts: "/dashboard/charts",
-  },
-
-  // Notifications
-  notifications: {
-    list: "/notifications",
-    markAsRead: (id) => `/notifications/${id}/read`,
-    markAllAsRead: "/notifications/read-all",
-    remove: (id) => `/notifications/${id}`,
-    unreadCount: "/notifications/unread-count",
-  },
-
-  // Files / Upload
-  files: {
-    upload: "/files/upload",
-    uploadMultiple: "/files/upload-multiple",
-    remove: (id) => `/files/${id}`,
+  // Families
+  families: {
+    all: "/family/all",
+    one: "/family/one",
+    create: "/family/create",
+    update: "/family/update",
+    remove: "/family/delete",
   },
 };
 

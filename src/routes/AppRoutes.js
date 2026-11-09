@@ -27,6 +27,10 @@ const AdminDetailsPage = lazy(
 
 const ProfilePage = lazy(() => import("../pages/Profile/ProfilePage.jsx"));
 
+const CitizenDetailsPage = lazy(
+  () => import("../pages/CitizenDetailsPage/CitizenDetailsPage.jsx"),
+);
+
 const NotFoundPage = lazy(
   () => import("../pages/NotFoundPage/NotFoundPage.jsx"),
 );
@@ -172,6 +176,15 @@ const AppRoutes = () => {
           element={
             <ProtectedPage>
               <ProfilePage />
+            </ProtectedPage>
+          }
+        />
+
+        <Route
+          path="/citizen/Details/:target_id"
+          element={
+            <ProtectedPage>
+              <CitizenDetailsPage />
             </ProtectedPage>
           }
         />

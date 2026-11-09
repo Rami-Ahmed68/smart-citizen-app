@@ -14,6 +14,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  InputRightElement,
   Select,
   SimpleGrid,
   Skeleton,
@@ -147,6 +148,7 @@ export default function CitizensPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  const [targetIdFilter, setTargetIdFilter] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const [genderFilter, setGenderFilter] = useState("");
   const [maritalFilter, setMaritalFilter] = useState("");
@@ -173,6 +175,7 @@ export default function CitizensPage() {
           limit: pagination.limit,
         };
 
+        if (targetIdFilter.trim()) params.target_id = targetIdFilter.trim();
         if (locationFilter) params.location = locationFilter;
         if (genderFilter) params.gender = genderFilter;
         if (maritalFilter) params.marital_status = maritalFilter;
@@ -212,6 +215,7 @@ export default function CitizensPage() {
     [
       page,
       pagination.limit,
+      targetIdFilter,
       locationFilter,
       genderFilter,
       maritalFilter,
@@ -235,6 +239,7 @@ export default function CitizensPage() {
   const handleRefresh = () => fetchCitizens("refresh");
 
   const handleClearFilters = () => {
+    setTargetIdFilter("");
     setLocationFilter("");
     setGenderFilter("");
     setMaritalFilter("");
@@ -247,6 +252,7 @@ export default function CitizensPage() {
   };
 
   const filterCount = [
+    targetIdFilter.trim(),
     locationFilter,
     genderFilter,
     maritalFilter,
@@ -283,17 +289,6 @@ export default function CitizensPage() {
               shadow="md">
               <Icon as={LuContact} boxSize={6} />
             </Flex>
-            <Box
-              position="absolute"
-              top={-1.5}
-              insetInlineEnd={-1.5}
-              w={3.5}
-              h={3.5}
-              rounded="full"
-              bg="syria.wheat.mid"
-              borderWidth="2px"
-              borderColor="bg-card"
-            />
           </Box>
 
           <VStack align="start" spacing={1.5} minW={0} flex="1">
@@ -306,7 +301,6 @@ export default function CitizensPage() {
               {t("citizens.pageTitle")}
             </Heading>
             <HStack spacing={2}>
-              <Box w="24px" h="2px" bg="syria.wheat.mid" rounded="full" />
               <Text fontSize="xs" color="text-muted" noOfLines={1}>
                 {t("citizens.pageSubtitle")}
               </Text>
@@ -506,7 +500,52 @@ export default function CitizensPage() {
           <Divider flex="1" borderColor="border-color" />
         </HStack>
 
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3} alignItems="end">
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={3} alignItems="end">
+          <Box>
+            <Text
+              fontSize="2xs"
+              color="text-muted"
+              fontWeight="semibold"
+              mb={1}
+              textTransform="uppercase"
+              letterSpacing="wider">
+              {t("citizens.filterCitizenId")}
+            </Text>
+            <InputGroup size="sm">
+              {isRTL ? (
+                <InputRightElement pointerEvents="none">
+                  <Icon as={LuSearch} color="syria.green.mid" boxSize={4} />
+                </InputRightElement>
+              ) : (
+                <InputLeftElement pointerEvents="none">
+                  <Icon as={LuSearch} color="syria.green.mid" boxSize={4} />
+                </InputLeftElement>
+              )}
+              <Input
+                type="text"
+                value={targetIdFilter}
+                onChange={(e) => setTargetIdFilter(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSearch();
+                }}
+                maxLength={24}
+                placeholder={t("citizens.filterCitizenIdPlaceholder")}
+                textAlign={isRTL ? "right" : "left"}
+                pl={isRTL ? 3 : undefined}
+                pr={isRTL ? 10 : undefined}
+                rounded="sm"
+                borderColor="border-color"
+                bg="bg-input"
+                transition="none"
+                _hover={{ borderColor: "border-color" }}
+                _focus={{
+                  borderColor: "syria.green.mid",
+                  boxShadow: "0 0 0 1px var(--chakra-colors-syria-green-mid)",
+                }}
+              />
+            </InputGroup>
+          </Box>
+
           <Select
             size="sm"
             value={nationalityFilter}

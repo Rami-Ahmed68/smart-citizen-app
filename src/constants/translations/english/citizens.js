@@ -97,6 +97,9 @@ const citizens = {
   readAccess: "Read Access",
   noReadAccess: "No read access",
 
+  filterCitizenId: "Citizen ID",
+  filterCitizenIdPlaceholder: "Enter the full citizen ID",
+
   governorates: {
     Damascus: "Damascus",
     "Rif Dimashq": "Rif Dimashq",

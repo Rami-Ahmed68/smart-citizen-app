@@ -96,6 +96,8 @@ const citizens = {
   readAccess: "صلاحية قراءة",
   noReadAccess: "بدون صلاحية قراءة",
 
+  filterCitizenId: "معرف المواطن",
+  filterCitizenIdPlaceholder: "أدخل معرف المواطن الكامل",
   governorates: {
     Damascus: "دمشق",
     "Rif Dimashq": "ريف دمشق",

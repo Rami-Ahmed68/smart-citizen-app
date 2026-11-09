@@ -142,7 +142,7 @@ export default function CitizenCard({ citizen }) {
         : "gray";
 
   const handleGoToProfile = () => {
-    if (citizen?._id) navigate(`/citizens/${citizen._id}`);
+    if (citizen?._id) navigate(`/citizen/details/${citizen._id}`);
   };
 
   return (
