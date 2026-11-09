@@ -2,7 +2,6 @@
 const familyDetails = {
   pageTitle: "سجل العائلة",
   subtitle: "عرض وإدارة بيانات العائلة وأفرادها",
-  backToList: "العودة إلى العائلات",
 
   loadError: "تعذر تحميل بيانات العائلة",
   familyNotFound: "العائلة غير موجودة",

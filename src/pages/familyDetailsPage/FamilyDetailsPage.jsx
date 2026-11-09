@@ -846,10 +846,6 @@ export default function FamilyDetailsPage() {
     if (id) navigate(`/citizen/details/${id}`);
   };
 
-  const goBack = () => {
-    navigate("/family");
-  };
-
   const startEdit = () => {
     const fId = getPersonId(family.father);
     const mId = getPersonId(family.mother);
@@ -1196,16 +1192,6 @@ export default function FamilyDetailsPage() {
 
   return (
     <Box w="full" py={1} dir={isRTL ? "rtl" : "ltr"}>
-      <Button
-        size="sm"
-        variant="ghost"
-        colorScheme="gray"
-        leftIcon={<Icon as={backIcon} boxSize={4} />}
-        onClick={goBack}
-        mb={4}>
-        {t("familyDetails.backToList")}
-      </Button>
-
       <Box
         bg="bg-card"
         borderWidth="1px"

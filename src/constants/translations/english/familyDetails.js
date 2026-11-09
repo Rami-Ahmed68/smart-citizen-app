@@ -2,7 +2,6 @@
 const familyDetails = {
   pageTitle: "Family Record",
   subtitle: "View and manage family data and its members",
-  backToList: "Back to families",
 
   loadError: "Failed to load family data",
   familyNotFound: "Family not found",
