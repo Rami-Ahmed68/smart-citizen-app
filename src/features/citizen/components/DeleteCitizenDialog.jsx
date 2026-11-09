@@ -22,6 +22,8 @@ import {
 } from "@chakra-ui/react";
 import { LuTrash2, LuTriangleAlert } from "react-icons/lu";
 import { useTranslation } from "react-i18next";
+import { citizensAPI } from "../../../api/citizens.api";
+import { useAppToast } from "../../../components/common/AppToast";
 
 const CONFIRM_WORD = "Delete";
 
@@ -29,33 +31,66 @@ export default function DeleteCitizenDialog({
   isOpen,
   onClose,
   citizen,
-  isDeleting,
-  onConfirm,
+  isDeleting: externalIsDeleting,
+  onConfirm: externalOnConfirm,
+  onSuccess,
   isRTL,
 }) {
   const { t } = useTranslation();
+  const appToast = useAppToast();
   const cancelRef = useRef();
   const inputRef = useRef();
   const [confirmText, setConfirmText] = useState("");
+  const [internalDeleting, setInternalDeleting] = useState(false);
+
+  const isDeleting =
+    typeof externalIsDeleting === "boolean"
+      ? externalIsDeleting
+      : internalDeleting;
 
   const fullName =
     `${citizen?.first_name ?? ""} ${citizen?.last_name ?? ""}`.trim() || "—";
 
   useEffect(() => {
-    if (!isOpen) setConfirmText("");
+    if (!isOpen) {
+      setConfirmText("");
+      setInternalDeleting(false);
+    }
   }, [isOpen]);
 
   const isMatch = confirmText.trim() === CONFIRM_WORD;
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!isMatch || isDeleting) return;
-    onConfirm();
+
+    if (typeof externalOnConfirm === "function") {
+      externalOnConfirm();
+      return;
+    }
+
+    const targetId = citizen?._id || citizen?.id;
+    if (!targetId) {
+      appToast.error(null, t("citizens.deleteError"));
+      return;
+    }
+
+    setInternalDeleting(true);
+    try {
+      await citizensAPI.remove(targetId);
+      appToast.success(t("citizens.deleteSuccess"));
+      if (typeof onSuccess === "function") onSuccess(targetId);
+      onClose();
+    } catch (err) {
+      appToast.error(err, t("citizens.deleteError"));
+    } finally {
+      setInternalDeleting(false);
+    }
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && isMatch && !isDeleting) {
       e.preventDefault();
-      onConfirm();
+      handleConfirm();
     }
   };
 
@@ -204,7 +239,7 @@ export default function DeleteCitizenDialog({
               color="white"
               leftIcon={<LuTrash2 size={14} />}
               onClick={handleConfirm}
-              isDisabled={!isMatch}
+              isDisabled={!isMatch || isDeleting}
               isLoading={isDeleting}
               loadingText={t("citizens.deleting")}
               rounded="md"

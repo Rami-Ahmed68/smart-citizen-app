@@ -102,6 +102,16 @@ const citizens = {
   filterCitizenId: "Citizen ID",
   filterCitizenIdPlaceholder: "Enter the full citizen ID",
 
+  deleteTitle: "Delete Citizen",
+  deleteBody:
+    "Are you sure you want to delete this citizen? They will be unlinked from all families and this action cannot be undone.",
+  deleteTypeToConfirm: "To confirm, type the following word:",
+  deleteCancel: "Cancel",
+  deleteConfirm: "Delete Citizen",
+  deleting: "Deleting...",
+  deleteSuccess: "Citizen deleted successfully",
+  deleteError: "Failed to delete citizen",
+
   governorates: {
     Damascus: "Damascus",
     "Rif Dimashq": "Rif Dimashq",

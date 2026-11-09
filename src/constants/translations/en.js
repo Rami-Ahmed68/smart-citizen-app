@@ -12,6 +12,8 @@ import citizens from "./english/citizens";
 import citizenDetails from "./english/citizenDetails";
 import families from "./english/families";
 import familyDetails from "./english/familyDetails";
+import addCitizen from "./english/addCitizen";
+import install from "./english/install";
 
 const en = {
   navbar,
@@ -27,6 +29,8 @@ const en = {
   citizenDetails,
   families,
   familyDetails,
+  addCitizen,
+  install,
 };
 
 export default en;

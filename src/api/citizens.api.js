@@ -31,7 +31,7 @@ export const citizensAPI = {
 
   remove: async (id) => {
     const { data } = await api.delete(ENDPOINTS.citizens.remove, {
-      data: { target_id: id },
+      params: { target_id: id },
     });
     return data;
   },

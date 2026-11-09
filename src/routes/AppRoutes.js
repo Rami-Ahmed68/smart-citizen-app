@@ -17,9 +17,6 @@ const AddCitizenPage = lazy(
   () => import("../pages/addCitizen/AddCitizenPage.jsx"),
 );
 const LogOutPage = lazy(() => import("../pages/logOutPage/LogOutPage.jsx"));
-const InstallAppPage = lazy(
-  () => import("../pages/install/InstallAppPage.jsx"),
-);
 
 const AdminDetailsPage = lazy(
   () => import("../pages/adminDetails/adminDetails.jsx"),
@@ -157,15 +154,6 @@ const AppRoutes = () => {
           element={
             <ProtectedPage>
               <LogOutPage />
-            </ProtectedPage>
-          }
-        />
-
-        <Route
-          path="/install"
-          element={
-            <ProtectedPage>
-              <InstallAppPage />
             </ProtectedPage>
           }
         />

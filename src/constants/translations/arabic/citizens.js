@@ -101,6 +101,16 @@ const citizens = {
   filterCitizenId: "معرف المواطن",
   filterCitizenIdPlaceholder: "أدخل معرف المواطن الكامل",
 
+  deleteTitle: "حذف المواطن",
+  deleteBody:
+    "هل أنت متأكد من حذف هذا المواطن؟ سيتم فك ارتباطه من جميع العائلات، ولن تتمكن من التراجع عن هذا الإجراء.",
+  deleteTypeToConfirm: "للتأكيد، اكتب الكلمة التالية:",
+  deleteCancel: "إلغاء",
+  deleteConfirm: "حذف المواطن",
+  deleting: "جارٍ الحذف...",
+  deleteSuccess: "تم حذف المواطن بنجاح",
+  deleteError: "تعذر حذف المواطن",
+
   governorates: {
     Damascus: "دمشق",
     "Rif Dimashq": "ريف دمشق",

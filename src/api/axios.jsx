@@ -1,4 +1,3 @@
-// src/api/axios.js
 import axios from "axios";
 
 const normalizeBaseUrl = (url) => {
@@ -53,6 +52,15 @@ const devError = (...args) => {
 
 api.interceptors.request.use(
   (config) => {
+    if (config.data instanceof FormData) {
+      if (typeof config.headers?.delete === "function") {
+        config.headers.delete("Content-Type");
+      } else if (config.headers) {
+        delete config.headers["Content-Type"];
+        delete config.headers["content-type"];
+      }
+    }
+
     if (accessToken) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${accessToken}`;
