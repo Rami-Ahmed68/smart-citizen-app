@@ -20,6 +20,7 @@ import {
   LuDownload,
   LuUser,
   LuLogOut,
+  LuHouse,
 } from "react-icons/lu";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../auth/AuthContext";
@@ -44,6 +45,13 @@ const links = [
     labelKey: "addCitizen",
     icon: LuUserPlus,
     permissions: ["create"],
+    role: ["super", "admin"],
+  },
+  {
+    to: "/family",
+    labelKey: "families",
+    icon: LuHouse,
+    permissions: ["read"],
     role: ["super", "admin"],
   },
   {

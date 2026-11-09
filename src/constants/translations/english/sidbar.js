@@ -1,8 +1,9 @@
 // src/i18n/locales/en/sidbar.js
-const enSidbar = {
+const sidbar = {
   dashboard: "Dashboard",
   citizens: "Citizens",
   addCitizen: "Add Citizen",
+  families: "Families",
   admins: "Admins",
   addAdmin: "Add Admin",
   installApp: "Install App",
@@ -11,4 +12,4 @@ const enSidbar = {
   brand: "Smart Citizen",
 };
 
-export default enSidbar;
+export default sidbar;

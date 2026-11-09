@@ -50,6 +50,8 @@ const RAW_CITIZEN_AVATAR_PATH =
 const API_URL = RAW_API_URL.replace(/\/+$/, "");
 const CITIZEN_AVATAR_PATH = RAW_CITIZEN_AVATAR_PATH.replace(/^\/+|\/+$/g, "");
 
+const MAX_SPOUSES = { male: 4, female: 1 };
+
 function buildCitizenAvatarUrl(filename) {
   if (!filename || typeof filename !== "string") return undefined;
   if (/^https?:\/\//i.test(filename)) return filename;
@@ -129,9 +131,26 @@ export default function CitizenCard({ citizen }) {
   const locationLabel = getLocationLabel(citizen?.location, t);
   const avatarUrl = buildCitizenAvatarUrl(citizen?.photo);
 
-  const childrenCount = Array.isArray(citizen?.children_ids)
-    ? citizen.children_ids.length
-    : 0;
+  const ownFamilies = Array.isArray(citizen?.own_family_ids)
+    ? citizen.own_family_ids
+    : [];
+
+  const marriagesCount = ownFamilies.length;
+  const maxMarriages = MAX_SPOUSES[citizen?.gender] ?? 1;
+
+  const childrenCount = ownFamilies.reduce(
+    (sum, family) =>
+      sum +
+      (Array.isArray(family?.children_ids) ? family.children_ids.length : 0),
+    0,
+  );
+
+  const parentsFamily =
+    citizen?.parents_family_id && typeof citizen.parents_family_id === "object"
+      ? citizen.parents_family_id
+      : null;
+  const hasFather = !!parentsFamily?.father;
+  const hasMother = !!parentsFamily?.mother;
 
   const maritalBadgeColor =
     citizen?.marital_status === "Married"
@@ -332,25 +351,22 @@ export default function CitizenCard({ citizen }) {
             <InfoCell
               icon={LuLink}
               label={t("citizens.detailFather")}
-              value={
-                citizen?.father ? t("citizens.linked") : t("citizens.notLinked")
-              }
+              value={hasFather ? t("citizens.linked") : t("citizens.notLinked")}
             />
             <InfoCell
               icon={LuLink}
               label={t("citizens.detailMother")}
-              value={
-                citizen?.mother ? t("citizens.linked") : t("citizens.notLinked")
-              }
+              value={hasMother ? t("citizens.linked") : t("citizens.notLinked")}
             />
             <InfoCell
               icon={LuUser}
-              label={t("citizens.detailSpouse")}
+              label={t("citizens.detailMarriages")}
               value={
-                citizen?.spouse_id
-                  ? t("citizens.linked")
-                  : t("citizens.notLinked")
+                marriagesCount > 0
+                  ? `${marriagesCount}/${maxMarriages}`
+                  : t("citizens.noSpouse")
               }
+              dir="ltr"
             />
             <InfoCell
               icon={LuUsers}

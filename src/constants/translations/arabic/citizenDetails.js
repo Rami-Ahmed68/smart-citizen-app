@@ -115,7 +115,7 @@ const citizenDetails = {
   maritalWidowedFemale: "أرملة",
 
   citizenshipByBirth: "بالولادة",
-  citizenshipNaturalized: "بالتجنس",
+  citizenshipNaturalized: "طلب الجنسية",
 
   religionMuslim: "مسلم",
   religionChristian: "مسيحي",

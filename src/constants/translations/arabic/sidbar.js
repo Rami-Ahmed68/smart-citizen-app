@@ -1,8 +1,9 @@
 // src/i18n/locales/ar/sidbar.js
-const arSidbar = {
+const sidbar = {
   dashboard: "لوحة التحكم",
   citizens: "المواطنون",
   addCitizen: "إضافة مواطن",
+  families: "العائلات",
   admins: "الأدمن",
   addAdmin: "إضافة أدمن",
   installApp: "تثبيت التطبيق",
@@ -11,4 +12,4 @@ const arSidbar = {
   brand: "المواطن الذكي",
 };
 
-export default arSidbar;
+export default sidbar;

@@ -45,7 +45,7 @@ const citizens = {
   maritalWidowedFemale: "أرملة",
 
   citizenshipByBirth: "بالولادة",
-  citizenshipNaturalized: "بالتجنس",
+  citizenshipNaturalized: "طلب الجنسية",
 
   religionMuslim: "مسلم",
   religionChristian: "مسيحي",
@@ -70,9 +70,11 @@ const citizens = {
   detailFather: "الأب",
   detailMother: "الأم",
   detailSpouse: "الزوج/الزوجة",
+  detailMarriages: "عدد الزوجات",
   detailChildren: "الأبناء",
   linked: "مرتبط",
   notLinked: "غير مرتبط",
+  noSpouse: "لا يوجد زواج",
   noChildren: "لا يوجد",
   childrenCount: "أبناء",
 
@@ -98,6 +100,7 @@ const citizens = {
 
   filterCitizenId: "معرف المواطن",
   filterCitizenIdPlaceholder: "أدخل معرف المواطن الكامل",
+
   governorates: {
     Damascus: "دمشق",
     "Rif Dimashq": "ريف دمشق",

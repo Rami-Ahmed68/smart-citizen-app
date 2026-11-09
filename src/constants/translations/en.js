@@ -10,6 +10,7 @@ import adminDetails from "./english/adminDetails";
 import profile from "./english/profile";
 import citizens from "./english/citizens";
 import citizenDetails from "./english/citizenDetails";
+import families from "./english/families";
 
 const en = {
   navbar,
@@ -23,6 +24,7 @@ const en = {
   profile,
   citizens,
   citizenDetails,
+  families,
 };
 
 export default en;

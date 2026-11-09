@@ -10,6 +10,7 @@ import adminDetails from "./arabic/adminDetails";
 import profile from "./arabic/profile";
 import citizens from "./arabic/citizens";
 import citizenDetails from "./arabic/citizenDetails";
+import families from "./arabic/families";
 
 const ar = {
   navbar,
@@ -23,6 +24,7 @@ const ar = {
   profile,
   citizens,
   citizenDetails,
+  families,
 };
 
 export default ar;

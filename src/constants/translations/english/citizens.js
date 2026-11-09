@@ -70,9 +70,11 @@ const citizens = {
   detailFather: "Father",
   detailMother: "Mother",
   detailSpouse: "Spouse",
+  detailMarriages: "Marriages",
   detailChildren: "Children",
   linked: "Linked",
   notLinked: "Not linked",
+  noSpouse: "No marriages",
   noChildren: "None",
   childrenCount: "children",
 
