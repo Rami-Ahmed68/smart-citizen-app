@@ -6,7 +6,6 @@ const sidbar = {
   families: "العائلات",
   admins: "الأدمن",
   addAdmin: "إضافة أدمن",
-  installApp: "تثبيت التطبيق",
   profile: "الحساب الشخصي",
   logout: "تسجيل الخروج",
   brand: "المواطن الذكي",

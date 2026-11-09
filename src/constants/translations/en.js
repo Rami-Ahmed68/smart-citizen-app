@@ -13,7 +13,7 @@ import citizenDetails from "./english/citizenDetails";
 import families from "./english/families";
 import familyDetails from "./english/familyDetails";
 import addCitizen from "./english/addCitizen";
-import install from "./english/install";
+import notFound from "./english/notFound";
 
 const en = {
   navbar,
@@ -30,7 +30,7 @@ const en = {
   families,
   familyDetails,
   addCitizen,
-  install,
+  notFound,
 };
 
 export default en;

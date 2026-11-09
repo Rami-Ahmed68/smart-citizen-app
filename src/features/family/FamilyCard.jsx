@@ -13,13 +13,7 @@ import {
   Tooltip,
   VStack,
 } from "@chakra-ui/react";
-import {
-  LuBaby,
-  LuExternalLink,
-  LuLayers,
-  LuTrash2,
-  LuUserCheck,
-} from "react-icons/lu";
+import { LuBaby, LuExternalLink, LuLayers, LuUserCheck } from "react-icons/lu";
 import { formatNumeric } from "../../utils/date";
 
 const RAW_API_URL = process.env.REACT_APP_API_URL || "";
@@ -147,7 +141,9 @@ export function FamilyCard({
     : 0;
 
   return (
-    <Box
+    <Flex
+      direction="column"
+      h="full"
       bg="bg-card"
       borderWidth="1px"
       borderColor="border-color"
@@ -162,7 +158,8 @@ export function FamilyCard({
         borderBottomWidth="1px"
         borderColor="border-color"
         align="center"
-        gap={2}>
+        gap={2}
+        flexShrink={0}>
         <Icon as={LuLayers} boxSize={3.5} color="syria.wheat.dark" />
         <Badge
           fontFamily="mono"
@@ -177,7 +174,7 @@ export function FamilyCard({
         </Text>
       </Flex>
 
-      <VStack align="stretch" spacing={2.5} p={3}>
+      <VStack align="stretch" spacing={2.5} p={3} flex="1" justify="flex-start">
         <PersonRow
           person={father}
           label={t("families.card.father")}
@@ -225,37 +222,27 @@ export function FamilyCard({
         borderTopWidth="1px"
         borderColor="border-color"
         bg="bg-input"
-        justify="space-between">
+        justify="space-between"
+        flexShrink={0}>
         <Button
           size="xs"
-          colorScheme="success"
-          variant="outline"
+          bg="syria.green.mid"
+          color="white"
           leftIcon={<LuExternalLink size={10} />}
           onClick={() => onView(familyId)}
           isDisabled={!familyId}>
           {t("families.card.view")}
         </Button>
-        {canDelete && (
-          <Tooltip label={t("families.card.delete")} hasArrow>
-            <IconButton
-              size="xs"
-              variant="ghost"
-              colorScheme="error"
-              icon={<LuTrash2 size={12} />}
-              aria-label={t("families.card.delete")}
-              onClick={() => onDelete(family)}
-              isDisabled={!familyId}
-            />
-          </Tooltip>
-        )}
       </HStack>
-    </Box>
+    </Flex>
   );
 }
 
 export function FamilyCardSkeleton() {
   return (
-    <Box
+    <Flex
+      direction="column"
+      h="full"
       bg="bg-card"
       borderWidth="1px"
       borderColor="border-color"
@@ -266,10 +253,11 @@ export function FamilyCardSkeleton() {
         px={3}
         py={2}
         borderBottomWidth="1px"
-        borderColor="border-color">
+        borderColor="border-color"
+        flexShrink={0}>
         <Skeleton height="14px" width="100px" rounded="sm" />
       </Box>
-      <VStack align="stretch" spacing={2.5} p={3}>
+      <VStack align="stretch" spacing={2.5} p={3} flex="1">
         {[1, 2, 3].map((i) => (
           <HStack key={i} spacing={2}>
             <Skeleton height="20px" width="20px" rounded="full" />
@@ -277,9 +265,14 @@ export function FamilyCardSkeleton() {
           </HStack>
         ))}
       </VStack>
-      <Box p={2} borderTopWidth="1px" borderColor="border-color" bg="bg-input">
+      <Box
+        p={2}
+        borderTopWidth="1px"
+        borderColor="border-color"
+        bg="bg-input"
+        flexShrink={0}>
         <SkeletonText noOfLines={1} spacing={1} />
       </Box>
-    </Box>
+    </Flex>
   );
 }

@@ -13,7 +13,7 @@ import citizenDetails from "./arabic/citizenDetails";
 import families from "./arabic/families";
 import familyDetails from "./arabic/familyDetails";
 import addCitizen from "./arabic/addCitizen";
-import install from "./arabic/install";
+import notFound from "./arabic/notFound";
 
 const ar = {
   navbar,
@@ -30,7 +30,7 @@ const ar = {
   families,
   familyDetails,
   addCitizen,
-  install,
+  notFound,
 };
 
 export default ar;

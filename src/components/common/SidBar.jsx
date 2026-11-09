@@ -17,7 +17,6 @@ import {
   LuUserPlus,
   LuUserCog,
   LuShield,
-  LuDownload,
   LuUser,
   LuLogOut,
   LuHouse,
@@ -67,13 +66,6 @@ const links = [
     icon: LuShield,
     permissions: ["create"],
     role: ["super"],
-  },
-  {
-    to: "/install",
-    labelKey: "installApp",
-    icon: LuDownload,
-    permissions: [],
-    role: ["super", "admin", "user"],
   },
 ];
 

@@ -491,7 +491,8 @@ export default function FamiliesPage() {
         {canCreate && (
           <Button
             size="sm"
-            colorScheme="success"
+            bg="syria.green.mid"
+            color="white"
             leftIcon={<LuPlus size={14} />}
             onClick={handleCreate}>
             {t("families.createFamily")}

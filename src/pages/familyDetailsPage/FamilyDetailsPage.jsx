@@ -424,21 +424,21 @@ function PdfTemplate({
     </span>
   );
 
-const headerText = (content) => (
-  <span
-    dir={isRTL ? "rtl" : "ltr"}
-    style={{
-      display: "inline-block",
-      direction: isRTL ? "rtl" : "ltr",
-      textAlign: isRTL ? "right" : "left",
-      width: "100%",
-      fontSize: "11px",
-      fontWeight: "600",
-      color: "#ffffff",
-    }}>
-    {content}
-  </span>
-);
+  const headerText = (content) => (
+    <span
+      dir={isRTL ? "rtl" : "ltr"}
+      style={{
+        display: "inline-block",
+        direction: isRTL ? "rtl" : "ltr",
+        textAlign: isRTL ? "right" : "left",
+        width: "100%",
+        fontSize: "11px",
+        fontWeight: "600",
+        color: "#ffffff",
+      }}>
+      {content}
+    </span>
+  );
 
   return (
     <Box
@@ -1253,7 +1253,8 @@ export default function FamilyDetailsPage() {
                 {canUpdate && (
                   <Button
                     size="sm"
-                    colorScheme="success"
+                    color="white"
+                    bg="syria.green.mid"
                     leftIcon={<LuPencil size={14} />}
                     onClick={startEdit}
                     rounded="md">
@@ -1263,8 +1264,8 @@ export default function FamilyDetailsPage() {
                 {canDelete && (
                   <Button
                     size="sm"
-                    variant="outline"
-                    colorScheme="error"
+                    color="white"
+                    bg="syria.umber.mid"
                     leftIcon={<LuTrash2 size={14} />}
                     onClick={onOpen}
                     rounded="md">

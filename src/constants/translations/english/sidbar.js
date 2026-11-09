@@ -6,7 +6,6 @@ const sidbar = {
   families: "Families",
   admins: "Admins",
   addAdmin: "Add Admin",
-  installApp: "Install App",
   profile: "My Profile",
   logout: "Logout",
   brand: "Smart Citizen",

@@ -89,7 +89,7 @@ const AppRoutes = () => {
         <Route
           path="/"
           element={
-            <ProtectedPage>
+            <ProtectedPage roles={["super", "admin"]}>
               <DashBoard />
             </ProtectedPage>
           }
@@ -98,7 +98,7 @@ const AppRoutes = () => {
         <Route
           path="/home"
           element={
-            <ProtectedPage>
+            <ProtectedPage roles={["super", "admin"]}>
               <HomePage />
             </ProtectedPage>
           }
@@ -152,7 +152,7 @@ const AppRoutes = () => {
         <Route
           path="/logout"
           element={
-            <ProtectedPage>
+            <ProtectedPage roles={["super", "admin"]}>
               <LogOutPage />
             </ProtectedPage>
           }
@@ -161,7 +161,7 @@ const AppRoutes = () => {
         <Route
           path="/admin/details/:target_id"
           element={
-            <ProtectedPage>
+            <ProtectedPage roles={["super"]}>
               <AdminDetailsPage />
             </ProtectedPage>
           }
@@ -170,7 +170,7 @@ const AppRoutes = () => {
         <Route
           path="/profile/:admin_id"
           element={
-            <ProtectedPage>
+            <ProtectedPage roles={["super", "admin"]}>
               <ProfilePage />
             </ProtectedPage>
           }
@@ -179,7 +179,7 @@ const AppRoutes = () => {
         <Route
           path="/citizen/Details/:target_id"
           element={
-            <ProtectedPage>
+            <ProtectedPage roles={["super", "admin"]}>
               <CitizenDetailsPage />
             </ProtectedPage>
           }
@@ -188,7 +188,7 @@ const AppRoutes = () => {
         <Route
           path="/family"
           element={
-            <ProtectedPage>
+            <ProtectedPage roles={["super", "admin"]}>
               <FamiliesPage />
             </ProtectedPage>
           }
@@ -197,7 +197,7 @@ const AppRoutes = () => {
         <Route
           path="/family/details/:target_id"
           element={
-            <ProtectedPage>
+            <ProtectedPage roles={["super", "admin"]}>
               <FamilyDetailsPage />
             </ProtectedPage>
           }
