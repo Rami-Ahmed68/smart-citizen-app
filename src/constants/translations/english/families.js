@@ -69,6 +69,37 @@ const families = {
     action: "Clear filters",
   },
 
+  createModal: {
+    title: "Create New Family Record",
+    subtitle: "Establish a marriage relationship between registered citizens",
+    hint: "Enter citizen IDs that already exist in the system. At least one parent is required.",
+    parentsSection: "Parents",
+    childrenSection: "Children",
+    fatherId: "Father ID",
+    motherId: "Mother ID",
+    childN: "Child",
+    idPlaceholder: "24 hex characters",
+    optional: "optional",
+    addChild: "Add child",
+    removeChild: "Remove",
+    create: "Create Family",
+    creating: "Creating...",
+    cancel: "Cancel",
+    footerNote:
+      "All relations are automatically validated against system constraints before saving.",
+    success: "Family created successfully",
+    error: "Failed to create family",
+    parentsSubtitle: "Father and mother IDs",
+    childrenSubtitle: "Children IDs",
+    noChildren: "No children added",
+    errors: {
+      atLeastOneParent: "At least one parent (father or mother) is required",
+      invalidId: "Invalid ID (must be 24 hex characters)",
+      sameParent: "Father and mother cannot be the same person",
+      childIsParent: "A child cannot be the same as the father or mother",
+    },
+  },
+
   delete: {
     title: "Delete family",
     body: "Are you sure you want to delete this family? This action cannot be undone.",

@@ -11,6 +11,7 @@ import profile from "./english/profile";
 import citizens from "./english/citizens";
 import citizenDetails from "./english/citizenDetails";
 import families from "./english/families";
+import familyDetails from "./english/familyDetails";
 
 const en = {
   navbar,
@@ -25,6 +26,7 @@ const en = {
   citizens,
   citizenDetails,
   families,
+  familyDetails,
 };
 
 export default en;

@@ -35,6 +35,10 @@ const FamiliesPage = lazy(
   () => import("../pages/familiesPage/FamiliesPage.jsx"),
 );
 
+const FamilyDetailsPage = lazy(
+  () => import("../pages/familyDetailsPage/FamilyDetailsPage.jsx"),
+);
+
 const NotFoundPage = lazy(
   () => import("../pages/NotFoundPage/NotFoundPage.jsx"),
 );
@@ -198,6 +202,15 @@ const AppRoutes = () => {
           element={
             <ProtectedPage>
               <FamiliesPage />
+            </ProtectedPage>
+          }
+        />
+
+        <Route
+          path="/family/details/:target_id"
+          element={
+            <ProtectedPage>
+              <FamilyDetailsPage />
             </ProtectedPage>
           }
         />

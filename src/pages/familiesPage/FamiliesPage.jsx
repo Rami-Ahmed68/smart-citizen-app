@@ -1,3 +1,4 @@
+// src/pages/family/FamiliesListPage.jsx
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -43,6 +44,7 @@ import {
   FamilyCardSkeleton,
   getObjectIdString,
 } from "../../features/family/FamilyCard";
+import CreateFamilyModal from "../../features/family/CreateFamilyModal";
 
 const EMPTY_DRAFT_FILTERS = {
   citizen_id: "",
@@ -174,6 +176,11 @@ export default function FamiliesPage() {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
+  } = useDisclosure();
+  const {
+    isOpen: isCreateOpen,
+    onOpen: onCreateOpen,
+    onClose: onCreateClose,
   } = useDisclosure();
   const cancelDeleteRef = useRef();
 
@@ -311,7 +318,12 @@ export default function FamiliesPage() {
     appliedFilters.has_children !== "";
 
   const handleCreate = () => {
-    navigate("/family/create");
+    onCreateOpen();
+  };
+
+  const handleFamilyCreated = () => {
+    loadFamilies();
+    loadStats();
   };
 
   const handleView = (id) => {
@@ -761,6 +773,14 @@ export default function FamiliesPage() {
           )}
         </>
       )}
+
+      <CreateFamilyModal
+        isOpen={isCreateOpen}
+        onClose={onCreateClose}
+        onCreated={handleFamilyCreated}
+        t={t}
+        appToast={appToast}
+      />
 
       <AlertDialog
         isOpen={isDeleteOpen}
