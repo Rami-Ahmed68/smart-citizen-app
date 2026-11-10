@@ -1,7 +1,7 @@
 // src/i18n/locales/en/familyDetails.js
 const familyDetails = {
   pageTitle: "Family Record",
-  subtitle: "View and manage family data and its members",
+  subtitle: "View and manage family data and members",
 
   loadError: "Failed to load family data",
   familyNotFound: "Family not found",
@@ -12,20 +12,20 @@ const familyDetails = {
 
   editFamily: "Edit",
   deleteFamily: "Delete",
-  save: "Save changes",
+  save: "Save Changes",
   saving: "Saving...",
   cancel: "Cancel",
   readOnly: "Read only",
 
   membersTable: "Family Members",
-  addChild: "Add child",
+  addChild: "Add Child",
 
   columns: {
     role: "Role",
     name: "Name",
     gender: "Gender",
     age: "Age",
-    birthDate: "Birth date",
+    birthDate: "Birth Date",
     actions: "Actions",
   },
 
@@ -36,25 +36,29 @@ const familyDetails = {
     daughter: "Daughter",
   },
 
-  addPlaceholder: "Enter citizen ID (24 chars)",
+  addPlaceholder: "Enter citizen ID (24 characters)",
   add: "Add",
   remove: "Remove",
   noData: "—",
 
-  viewProfile: "View profile",
+  viewProfile: "View Profile",
   ageYears: "years",
   genderMale: "Male",
   genderFemale: "Female",
-  noChildren: "No children registered",
+  noChildren: "No registered children",
 
   sections: {
     audit: "Record Information",
   },
 
   detailId: "Family ID",
-  detailCreatedAt: "Created at",
-  detailUpdatedAt: "Last update",
-  detailAddedBy: "Added by",
+  detailCreatedAt: "Created At",
+  detailUpdatedAt: "Last Update",
+  detailAddedBy: "Added By",
+
+  clickToCopyId: "Click to copy family ID",
+  idCopied: "Family ID copied",
+  copyError: "Failed to copy ID",
 
   errors: {
     invalidId: "Invalid citizen ID (must be 24 hex characters)",
@@ -71,8 +75,8 @@ const familyDetails = {
     exporting: "Exporting...",
     success: "File exported successfully",
     error: "Failed to export file",
-    membersCount: "Members count",
-    generatedOn: "Generated on",
+    membersCount: "Members Count",
+    generatedOn: "Generated On",
     registryFooter: "Civil Registry - Official Document",
     republicNameAr: "الجمهورية العربية السورية",
     republicNameEn: "SYRIAN ARAB REPUBLIC",
@@ -80,8 +84,8 @@ const familyDetails = {
   },
 
   delete: {
-    title: "Delete family",
-    body: "Are you sure you want to delete this family? This will unlink all members from it. The citizens' personal profiles will NOT be deleted.",
+    title: "Delete Family",
+    body: "Are you sure you want to delete this family? All members will be unlinked. Citizen profiles will not be deleted.",
     confirm: "Yes, delete",
     cancel: "Cancel",
     deleting: "Deleting...",

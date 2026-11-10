@@ -1,4 +1,3 @@
-// src/pages/family/FamilyDetailsPage.jsx
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -21,8 +20,6 @@ import {
   InputGroup,
   InputRightElement,
   SimpleGrid,
-  Skeleton,
-  SkeletonText,
   Table,
   TableContainer,
   Tbody,
@@ -37,6 +34,7 @@ import {
 } from "@chakra-ui/react";
 import {
   LuCheck,
+  LuCopy,
   LuDownload,
   LuExternalLink,
   LuPencil,
@@ -53,6 +51,7 @@ import { citizensAPI } from "../../api/citizens.api";
 import { useAppToast } from "../../components/common/AppToast";
 import { formatNumeric } from "../../utils/date";
 import { getObjectIdString } from "../../features/family/FamilyCard";
+import FamilyDetailsSkeleton from "./FamilyDetailsSkeleton";
 import syriaLogo from "../../assets/new_syrian_logo.png";
 
 const RAW_API_URL = process.env.REACT_APP_API_URL || "";
@@ -328,12 +327,18 @@ function AddMemberRow({ label, value, onChange, onSubmit, isSubmitting, t }) {
             <InputRightElement width="auto" pe={1}>
               <Button
                 size="xs"
-                colorScheme="success"
+                bg="syria.green.mid"
+                color="syria.wheat.light"
                 leftIcon={<LuCheck size={10} />}
                 onClick={onSubmit}
                 isLoading={isSubmitting}
                 loadingText=""
-                h="24px">
+                h="24px"
+                _hover={{ bg: "syria.green.light" }}
+                _active={{ bg: "syria.green.dark" }}
+                transition="all 0.2s ease"
+                rounded="sm"
+                fontWeight="semibold">
                 {t("familyDetails.add")}
               </Button>
             </InputRightElement>
@@ -750,31 +755,6 @@ function PdfTemplate({
   );
 }
 
-function PageSkeleton() {
-  return (
-    <Box w="full" py={1}>
-      <Skeleton height="28px" width="120px" rounded="sm" mb={4} />
-      <Box
-        bg="bg-card"
-        borderWidth="1px"
-        borderColor="border-color"
-        rounded="md"
-        p={5}
-        mb={4}>
-        <SkeletonText noOfLines={2} spacing={3} />
-      </Box>
-      <Box
-        bg="bg-card"
-        borderWidth="1px"
-        borderColor="border-color"
-        rounded="md"
-        p={5}>
-        <SkeletonText noOfLines={8} spacing={3} />
-      </Box>
-    </Box>
-  );
-}
-
 export default function FamilyDetailsPage() {
   const { target_id } = useParams();
   const navigate = useNavigate();
@@ -791,6 +771,7 @@ export default function FamilyDetailsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -808,6 +789,7 @@ export default function FamilyDetailsPage() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelDeleteRef = useRef();
   const pdfRef = useRef();
+  const copyTimerRef = useRef(null);
 
   const appToastRef = useRef(appToast);
   appToastRef.current = appToast;
@@ -840,8 +822,42 @@ export default function FamilyDetailsPage() {
     };
   }, [target_id]);
 
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, []);
+
   const goToCitizen = (id) => {
     if (id) navigate(`/citizen/details/${id}`);
+  };
+
+  const handleCopyId = async () => {
+    const familyId = getObjectIdString(family?._id);
+    if (!familyId) return;
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(familyId);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = familyId;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+
+      setCopied(true);
+      appToastRef.current.success(tRef.current("familyDetails.idCopied"));
+
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+      copyTimerRef.current = setTimeout(() => setCopied(false), 2000);
+    } catch {
+      appToastRef.current.error(null, tRef.current("familyDetails.copyError"));
+    }
   };
 
   const startEdit = () => {
@@ -1150,7 +1166,7 @@ export default function FamilyDetailsPage() {
     }
   };
 
-  if (isLoading) return <PageSkeleton />;
+  if (isLoading) return <FamilyDetailsSkeleton isRTL={isRTL} />;
   if (!family) return null;
 
   const familyId = getObjectIdString(family._id);
@@ -1202,14 +1218,44 @@ export default function FamilyDetailsPage() {
               {t("familyDetails.pageTitle")}
             </Heading>
             <HStack spacing={3} wrap="wrap" fontSize="xs" color="text-muted">
-              <Badge
-                fontFamily="mono"
-                colorScheme="green"
-                fontSize="2xs"
-                px={2}
-                rounded="sm">
-                #{familyId?.slice(-8) || "—"}
-              </Badge>
+              <Tooltip
+                label={
+                  copied
+                    ? t("familyDetails.idCopied")
+                    : t("familyDetails.clickToCopyId")
+                }
+                hasArrow
+                placement="top">
+                <Badge
+                  as="button"
+                  type="button"
+                  onClick={handleCopyId}
+                  colorScheme={copied ? "success" : "green"}
+                  variant="subtle"
+                  fontFamily="mono"
+                  fontSize="2xs"
+                  px={2}
+                  py={1}
+                  rounded="sm"
+                  cursor="pointer"
+                  display="inline-flex"
+                  alignItems="center"
+                  gap={1.5}
+                  textTransform="none"
+                  fontWeight="semibold"
+                  border="none"
+                  dir="ltr"
+                  transition="all 0.2s ease"
+                  _hover={{ opacity: 0.85 }}
+                  _focusVisible={{
+                    outline: "2px solid",
+                    outlineColor: "syria.green.mid",
+                    outlineOffset: "2px",
+                  }}>
+                  <Icon as={copied ? LuCheck : LuCopy} boxSize={3} />#
+                  {familyId?.slice(-8) || "—"}
+                </Badge>
+              </Tooltip>
               {family.createdAt && (
                 <Text>
                   {t("familyDetails.detailCreatedAt")}:{" "}
@@ -1236,22 +1282,44 @@ export default function FamilyDetailsPage() {
                 {canUpdate && (
                   <Button
                     size="sm"
-                    color="white"
                     bg="syria.green.mid"
+                    color="syria.wheat.light"
                     leftIcon={<LuPencil size={14} />}
                     onClick={startEdit}
-                    rounded="md">
+                    _hover={{
+                      bg: "syria.green.light",
+                      transform: "translateY(-1px)",
+                      shadow: "md",
+                    }}
+                    _active={{
+                      bg: "syria.green.dark",
+                      transform: "translateY(0)",
+                    }}
+                    transition="all 0.2s ease"
+                    rounded="md"
+                    fontWeight="semibold">
                     {t("familyDetails.editFamily")}
                   </Button>
                 )}
                 {canDelete && (
                   <Button
                     size="sm"
-                    color="white"
                     bg="syria.umber.mid"
+                    color="syria.wheat.light"
                     leftIcon={<LuTrash2 size={14} />}
                     onClick={onOpen}
-                    rounded="md">
+                    _hover={{
+                      bg: "syria.umber.light",
+                      transform: "translateY(-1px)",
+                      shadow: "md",
+                    }}
+                    _active={{
+                      bg: "syria.umber.dark",
+                      transform: "translateY(0)",
+                    }}
+                    transition="all 0.2s ease"
+                    rounded="md"
+                    fontWeight="semibold">
                     {t("familyDetails.deleteFamily")}
                   </Button>
                 )}
@@ -1282,12 +1350,17 @@ export default function FamilyDetailsPage() {
                 </Button>
                 <Button
                   size="sm"
-                  colorScheme="success"
+                  bg="syria.green.mid"
+                  color="syria.wheat.light"
                   leftIcon={<LuCheck size={14} />}
                   onClick={saveEdit}
                   isLoading={isSaving}
                   loadingText={t("familyDetails.saving")}
-                  rounded="md">
+                  _hover={{ bg: "syria.green.light" }}
+                  _active={{ bg: "syria.green.dark" }}
+                  transition="all 0.2s ease"
+                  rounded="md"
+                  fontWeight="semibold">
                   {t("familyDetails.save")}
                 </Button>
               </>

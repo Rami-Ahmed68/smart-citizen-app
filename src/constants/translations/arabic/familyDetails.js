@@ -56,6 +56,10 @@ const familyDetails = {
   detailUpdatedAt: "آخر تحديث",
   detailAddedBy: "أضيفت بواسطة",
 
+  clickToCopyId: "انقر لنسخ معرّف العائلة",
+  idCopied: "تم نسخ معرّف العائلة",
+  copyError: "تعذر نسخ المعرّف",
+
   errors: {
     invalidId: "معرف المواطن غير صالح (يجب أن يكون 24 حرفًا hex)",
     alreadyInFamily: "هذا الشخص موجود بالفعل في العائلة",
