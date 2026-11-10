@@ -217,10 +217,25 @@ export function FamilyCard({ family, onView, onNavigate, t }) {
         <Button
           size="xs"
           bg="syria.green.mid"
-          color="white"
+          color="syria.wheat.light"
           leftIcon={<LuExternalLink size={10} />}
           onClick={() => onView(familyId)}
-          isDisabled={!familyId}>
+          isDisabled={!familyId}
+          _hover={{
+            bg: "syria.green.light",
+            shadow: "sm",
+          }}
+          _disabled={{
+            opacity: 0.6,
+            cursor: "not-allowed",
+            _hover: {
+              bg: "syria.green.mid",
+              shadow: "none",
+            },
+          }}
+          transition="all 0.2s ease"
+          rounded="md"
+          fontWeight="semibold">
           {t("families.card.view")}
         </Button>
       </HStack>
