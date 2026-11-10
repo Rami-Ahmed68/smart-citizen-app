@@ -36,8 +36,6 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import {
-  LuArrowLeft,
-  LuArrowRight,
   LuCheck,
   LuDownload,
   LuExternalLink,
@@ -1156,7 +1154,6 @@ export default function FamilyDetailsPage() {
   if (!family) return null;
 
   const familyId = getObjectIdString(family._id);
-  const backIcon = isRTL ? LuArrowRight : LuArrowLeft;
 
   const fatherData = isEditing
     ? editFatherId

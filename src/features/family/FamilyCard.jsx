@@ -1,14 +1,11 @@
 import {
   Avatar,
   Badge,
-  Box,
   Button,
   Flex,
   HStack,
   Icon,
   IconButton,
-  Skeleton,
-  SkeletonText,
   Text,
   Tooltip,
   VStack,
@@ -125,14 +122,7 @@ function PersonRow({ person, label, fallbackText, icon, onNavigate, t }) {
   );
 }
 
-export function FamilyCard({
-  family,
-  canDelete,
-  onView,
-  onDelete,
-  onNavigate,
-  t,
-}) {
+export function FamilyCard({ family, onView, onNavigate, t }) {
   const familyId = getObjectIdString(family?._id);
   const father = family?.father;
   const mother = family?.mother;
@@ -234,45 +224,6 @@ export function FamilyCard({
           {t("families.card.view")}
         </Button>
       </HStack>
-    </Flex>
-  );
-}
-
-export function FamilyCardSkeleton() {
-  return (
-    <Flex
-      direction="column"
-      h="full"
-      bg="bg-card"
-      borderWidth="1px"
-      borderColor="border-color"
-      rounded="md"
-      overflow="hidden">
-      <Box
-        bg="bg-input"
-        px={3}
-        py={2}
-        borderBottomWidth="1px"
-        borderColor="border-color"
-        flexShrink={0}>
-        <Skeleton height="14px" width="100px" rounded="sm" />
-      </Box>
-      <VStack align="stretch" spacing={2.5} p={3} flex="1">
-        {[1, 2, 3].map((i) => (
-          <HStack key={i} spacing={2}>
-            <Skeleton height="20px" width="20px" rounded="full" />
-            <Skeleton height="12px" flex="1" rounded="sm" />
-          </HStack>
-        ))}
-      </VStack>
-      <Box
-        p={2}
-        borderTopWidth="1px"
-        borderColor="border-color"
-        bg="bg-input"
-        flexShrink={0}>
-        <SkeletonText noOfLines={1} spacing={1} />
-      </Box>
     </Flex>
   );
 }

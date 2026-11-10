@@ -17,9 +17,6 @@ import {
   InputRightElement,
   Select,
   SimpleGrid,
-  Skeleton,
-  SkeletonCircle,
-  Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -42,6 +39,7 @@ import { useAuth } from "../../auth/AuthContext";
 import { citizensAPI } from "../../api/citizens.api";
 import { useAppToast } from "../../components/common/AppToast";
 import CitizenCard from "../../features/citizen/components/CitizenCard";
+import CitizensSkeleton from "./CitizensSkeleton";
 import { COUNTRIES } from "../../utils/countries";
 import {
   GOVERNORATES,
@@ -681,26 +679,7 @@ export default function CitizensPage() {
       </Box>
 
       {isLoading ? (
-        <Stack spacing={3}>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Box
-              key={i}
-              bg="bg-card"
-              borderWidth="1px"
-              borderColor="border-color"
-              rounded="md"
-              p={4}>
-              <HStack spacing={3}>
-                <SkeletonCircle size="10" />
-                <VStack align="start" spacing={2} flex="1">
-                  <Skeleton height="14px" width="180px" rounded="sm" />
-                  <Skeleton height="10px" width="120px" rounded="sm" />
-                </VStack>
-                <Skeleton height="20px" width="60px" rounded="sm" />
-              </HStack>
-            </Box>
-          ))}
-        </Stack>
+        <CitizensSkeleton cardCount={5} />
       ) : citizens.length === 0 ? (
         <EmptyState
           isFiltering={isFiltering}

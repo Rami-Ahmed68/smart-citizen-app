@@ -1,13 +1,6 @@
-// src/pages/family/FamiliesListPage.jsx
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Box,
   Button,
   Center,
@@ -41,9 +34,9 @@ import { familiesAPI } from "../../api/families.api";
 import { useAppToast } from "../../components/common/AppToast";
 import {
   FamilyCard,
-  FamilyCardSkeleton,
   getObjectIdString,
 } from "../../features/family/FamilyCard";
+import { FamilyCardSkeleton } from "./FamilySkeleton";
 import CreateFamilyModal from "../../features/family/CreateFamilyModal";
 
 const EMPTY_DRAFT_FILTERS = {
@@ -149,13 +142,10 @@ export default function FamiliesPage() {
   const isRTL = i18n.language === "ar";
   const isSuper = currentAdmin?.role === "super";
   const canCreate = isSuper || currentAdmin?.permissions?.includes("create");
-  const canDelete = isSuper || currentAdmin?.permissions?.includes("delete");
 
   const [families, setFamilies] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [familyToDelete, setFamilyToDelete] = useState(null);
 
   const [stats, setStats] = useState({
     total: 0,
@@ -173,16 +163,10 @@ export default function FamiliesPage() {
   });
 
   const {
-    isOpen: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure();
-  const {
     isOpen: isCreateOpen,
     onOpen: onCreateOpen,
     onClose: onCreateClose,
   } = useDisclosure();
-  const cancelDeleteRef = useRef();
 
   const appToastRef = useRef(appToast);
   appToastRef.current = appToast;
@@ -334,28 +318,6 @@ export default function FamiliesPage() {
     if (id) navigate(`/citizen/details/${id}`);
   };
 
-  const handleDeleteClick = (family) => {
-    setFamilyToDelete(family);
-    onDeleteOpen();
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!familyToDelete) return;
-    setIsDeleting(true);
-    try {
-      await familiesAPI.remove(familyToDelete._id);
-      appToastRef.current.success(tRef.current("families.deleteSuccess"));
-      onDeleteClose();
-      setFamilyToDelete(null);
-      loadFamilies();
-      loadStats();
-    } catch (err) {
-      appToastRef.current.error(err, tRef.current("families.deleteError"));
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
   const currentPage = pagination?.page || 1;
   const pages = pagination?.pages || 1;
   const hasNext = pagination?.hasNext || false;
@@ -439,7 +401,13 @@ export default function FamiliesPage() {
           </Text>
           {canCreate && (
             <Button
-              colorScheme="success"
+              bg="syria.green.mid"
+              color="syria.wheat.light"
+              _hover={{ bg: "syria.green.light" }}
+              _active={{ bg: "syria.green.dark" }}
+              transition="all 0.2s ease"
+              rounded="md"
+              fontWeight="semibold"
               leftIcon={<LuPlus size={14} />}
               onClick={handleCreate}>
               {t("families.empty.action")}
@@ -492,9 +460,18 @@ export default function FamiliesPage() {
           <Button
             size="sm"
             bg="syria.green.mid"
-            color="white"
+            color="syria.wheat.light"
             leftIcon={<LuPlus size={14} />}
-            onClick={handleCreate}>
+            onClick={handleCreate}
+            _hover={{
+              bg: "syria.green.light",
+              transform: "translateY(-1px)",
+              shadow: "md",
+            }}
+            _active={{ bg: "syria.green.dark", transform: "translateY(0)" }}
+            transition="all 0.2s ease"
+            rounded="md"
+            fontWeight="semibold">
             {t("families.createFamily")}
           </Button>
         )}
@@ -685,35 +662,76 @@ export default function FamiliesPage() {
           <Button
             size="sm"
             bg="syria.green.mid"
-            color="white"
+            color="syria.wheat.light"
             leftIcon={<LuRefreshCw size={12} />}
             onClick={handleRefresh}
-            isDisabled={isLoading}>
+            isDisabled={isLoading}
+            _hover={{
+              bg: "syria.green.light",
+              transform: "translateY(-1px)",
+              shadow: "md",
+            }}
+            _active={{ bg: "syria.green.dark", transform: "translateY(0)" }}
+            _disabled={{
+              opacity: 0.6,
+              cursor: "not-allowed",
+              _hover: {
+                bg: "syria.green.mid",
+                transform: "none",
+                shadow: "none",
+              },
+            }}
+            transition="all 0.2s ease"
+            rounded="md"
+            fontWeight="semibold">
             {t("families.filters.refresh")}
           </Button>
 
           <Button
             size="sm"
             bg="syria.umber.mid"
-            color="white"
-            _hover={{ bg: "syria.umber.light" }}
-            _active={{ bg: "syria.umber.light" }}
+            color="syria.wheat.light"
             leftIcon={<LuRotateCcw size={12} />}
             onClick={handleReset}
-            isDisabled={isLoading}>
+            isDisabled={isLoading}
+            _hover={{
+              bg: "syria.umber.light",
+              transform: "translateY(-1px)",
+              shadow: "md",
+            }}
+            _active={{ bg: "syria.umber.dark", transform: "translateY(0)" }}
+            _disabled={{
+              opacity: 0.6,
+              cursor: "not-allowed",
+              _hover: {
+                bg: "syria.umber.mid",
+                transform: "none",
+                shadow: "none",
+              },
+            }}
+            transition="all 0.2s ease"
+            rounded="md"
+            fontWeight="semibold">
             {t("families.filters.reset")}
           </Button>
 
           <Button
             size="sm"
             bg="syria.green.mid"
-            color="white"
-            _hover={{ bg: "syria.green.dark" }}
-            _active={{ bg: "syria.green.dark" }}
+            color="syria.wheat.light"
             leftIcon={<LuSearch size={12} />}
             onClick={handleSearch}
             isLoading={isLoading}
-            loadingText={t("families.filters.searching")}>
+            loadingText={t("families.filters.searching")}
+            _hover={{
+              bg: "syria.green.light",
+              transform: "translateY(-1px)",
+              shadow: "md",
+            }}
+            _active={{ bg: "syria.green.dark", transform: "translateY(0)" }}
+            transition="all 0.2s ease"
+            rounded="md"
+            fontWeight="semibold">
             {t("families.filters.search")}
           </Button>
         </HStack>
@@ -734,9 +752,7 @@ export default function FamiliesPage() {
               <FamilyCard
                 key={getObjectIdString(family._id)}
                 family={family}
-                canDelete={canDelete}
                 onView={handleView}
-                onDelete={handleDeleteClick}
                 onNavigate={handleNavigateToCitizen}
                 t={t}
               />
@@ -782,38 +798,6 @@ export default function FamiliesPage() {
         t={t}
         appToast={appToast}
       />
-
-      <AlertDialog
-        isOpen={isDeleteOpen}
-        leastDestructiveRef={cancelDeleteRef}
-        onClose={onDeleteClose}
-        isCentered>
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="md" fontWeight="bold">
-              {t("families.delete.title")}
-            </AlertDialogHeader>
-            <AlertDialogBody fontSize="sm">
-              {t("families.delete.body")}
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelDeleteRef} onClick={onDeleteClose} size="sm">
-                {t("families.delete.cancel")}
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={handleDeleteConfirm}
-                isLoading={isDeleting}
-                size="sm"
-                ml={3}>
-                {isDeleting
-                  ? t("families.delete.deleting")
-                  : t("families.delete.confirm")}
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
     </Box>
   );
 }

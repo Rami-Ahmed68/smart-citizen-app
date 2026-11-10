@@ -19,7 +19,6 @@ import {
   InputLeftElement,
   InputRightElement,
   SimpleGrid,
-  Spinner,
   Text,
   Tooltip,
   VStack,
@@ -53,6 +52,7 @@ import { useAuth } from "../../auth/AuthContext";
 import { adminsAPI } from "../../api/admins.api";
 import { useAppToast } from "../../components/common/AppToast";
 import { formatNumeric } from "../../utils/date";
+import ProfileSkeleton from "./ProfileSkeleton";
 
 /* ─── Avatar URL builder (env-driven) ─── */
 const RAW_API_URL = process.env.REACT_APP_API_URL || "";
@@ -452,11 +452,7 @@ export default function ProfilePage() {
   }, [currentAdminId]);
 
   if (isAuthLoading || isFetchingAdmin) {
-    return (
-      <Flex justify="center" align="center" minH="60vh">
-        <Spinner size="lg" color="syria.green.mid" />
-      </Flex>
-    );
+    return <ProfileSkeleton isRTL={isRTL} />;
   }
 
   if (!currentAdmin) {

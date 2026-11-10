@@ -515,12 +515,30 @@ export default function CreateFamilyModal({
               {t("families.createModal.cancel")}
             </Button>
             <Button
-              colorScheme="success"
+              bg="syria.green.mid"
+              color="syria.wheat.light"
+              _hover={{
+                bg: "syria.green.light",
+                transform: "translateY(-1px)",
+                shadow: "md",
+              }}
+              _active={{ bg: "syria.green.dark", transform: "translateY(0)" }}
+              _disabled={{
+                opacity: 0.6,
+                cursor: "not-allowed",
+                _hover: {
+                  bg: "syria.green.mid",
+                  transform: "none",
+                  shadow: "none",
+                },
+              }}
+              transition="all 0.2s ease"
               onClick={handleSubmit}
               isLoading={isSubmitting}
               loadingText={t("families.createModal.creating")}
               size="sm"
-              rounded="md">
+              rounded="md"
+              fontWeight="semibold">
               {t("families.createModal.create")}
             </Button>
           </HStack>
