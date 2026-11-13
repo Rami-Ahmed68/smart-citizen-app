@@ -36,7 +36,11 @@ export const setUnauthorizedHandler = (handler) => {
   onUnauthorized = typeof handler === "function" ? handler : null;
 };
 
-const isDev = process.env.NODE_ENV === "development";
+const isDev = process.env.REACT_APP_NODE_ENV === "development";
+
+if (isDev) {
+  alert("Is Dev");
+}
 
 const devLog = (...args) => {
   if (isDev) {

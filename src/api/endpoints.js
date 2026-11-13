@@ -45,6 +45,11 @@ export const ENDPOINTS = {
     update: "/family/update",
     remove: "/family/delete",
   },
+
+  // Dashboard
+  dashboard: {
+    stats: "/dashboard/stats",
+  },
 };
 
 export default ENDPOINTS;

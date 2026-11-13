@@ -14,6 +14,7 @@ import families from "./arabic/families";
 import familyDetails from "./arabic/familyDetails";
 import addCitizen from "./arabic/addCitizen";
 import notFound from "./arabic/notFound";
+import dashboard from "./arabic/dashboard";
 
 const ar = {
   navbar,
@@ -31,6 +32,7 @@ const ar = {
   familyDetails,
   addCitizen,
   notFound,
+  dashboard,
 };
 
 export default ar;

@@ -14,6 +14,7 @@ import families from "./english/families";
 import familyDetails from "./english/familyDetails";
 import addCitizen from "./english/addCitizen";
 import notFound from "./english/notFound";
+import dashboard from "./english/dashboard";
 
 const en = {
   navbar,
@@ -31,6 +32,7 @@ const en = {
   familyDetails,
   addCitizen,
   notFound,
+  dashboard,
 };
 
 export default en;
