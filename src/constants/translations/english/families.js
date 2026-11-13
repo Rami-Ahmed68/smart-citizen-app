@@ -16,6 +16,9 @@ const families = {
   },
 
   filters: {
+    familyId: "Family ID",
+    familyIdPlaceholder: "Enter family ID (24 chars)",
+    invalidFamilyId: "Invalid family ID (must be 24 hex characters)",
     citizenId: "Citizen ID",
     citizenIdPlaceholder: "Enter citizen ID (24 chars)",
     relation: "Relation",

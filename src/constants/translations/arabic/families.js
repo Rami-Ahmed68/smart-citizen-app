@@ -16,6 +16,9 @@ const families = {
   },
 
   filters: {
+    familyId: "معرف العائلة",
+    familyIdPlaceholder: "أدخل معرف العائلة (24 حرفًا)",
+    invalidFamilyId: "معرف العائلة غير صالح (يجب أن يكون 24 حرفًا hex)",
     citizenId: "معرف المواطن",
     citizenIdPlaceholder: "أدخل معرف المواطن (24 حرفًا)",
     relation: "العلاقة",

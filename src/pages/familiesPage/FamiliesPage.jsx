@@ -40,6 +40,7 @@ import { FamilyCardSkeleton } from "./FamilySkeleton";
 import CreateFamilyModal from "../../features/family/CreateFamilyModal";
 
 const EMPTY_DRAFT_FILTERS = {
+  target_id: "",
   citizen_id: "",
   relation: "",
   has_father: "",
@@ -205,6 +206,10 @@ export default function FamiliesPage() {
         sortOrder,
       };
 
+      if (appliedFilters.target_id) {
+        params.target_id = appliedFilters.target_id;
+      }
+
       if (appliedFilters.citizen_id) {
         params.citizen_id = appliedFilters.citizen_id;
         if (appliedFilters.relation) {
@@ -249,6 +254,7 @@ export default function FamiliesPage() {
 
   const handleSearch = () => {
     const trimmedCitizenId = draftFilters.citizen_id.trim();
+    const trimmedTargetId = draftFilters.target_id.trim();
 
     if (trimmedCitizenId && !isValidObjectId(trimmedCitizenId)) {
       appToastRef.current.error(
@@ -258,9 +264,18 @@ export default function FamiliesPage() {
       return;
     }
 
+    if (trimmedTargetId && !isValidObjectId(trimmedTargetId)) {
+      appToastRef.current.error(
+        null,
+        tRef.current("families.filters.invalidFamilyId"),
+      );
+      return;
+    }
+
     setAppliedFilters({
       page: 1,
       limit: appliedFilters.limit,
+      target_id: trimmedTargetId,
       citizen_id: trimmedCitizenId,
       relation: trimmedCitizenId ? draftFilters.relation : "",
       has_father: draftFilters.has_father,
@@ -296,6 +311,7 @@ export default function FamiliesPage() {
   };
 
   const hasActiveFilters =
+    appliedFilters.target_id !== "" ||
     appliedFilters.citizen_id !== "" ||
     appliedFilters.has_father !== "" ||
     appliedFilters.has_mother !== "" ||
@@ -487,9 +503,39 @@ export default function FamiliesPage() {
         p={3}
         mb={4}>
         <SimpleGrid
-          columns={{ base: 1, sm: 2, lg: 3, xl: 6 }}
+          columns={{ base: 1, sm: 2, lg: 4, xl: 9 }}
           spacing={3}
           mb={3}>
+          <Box gridColumn={{ base: "span 1", lg: "span 2" }}>
+            <Text
+              fontSize="2xs"
+              color="text-muted"
+              fontWeight="semibold"
+              mb={1}>
+              {t("families.filters.familyId")}
+            </Text>
+            <InputGroup size="sm">
+              <InputLeftElement pointerEvents="none">
+                <Icon as={LuLayers} boxSize={3.5} color="text-muted" />
+              </InputLeftElement>
+              <Input
+                value={draftFilters.target_id}
+                onChange={(e) => setDraft("target_id", e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={t("families.filters.familyIdPlaceholder")}
+                rounded="sm"
+                bg="bg-input"
+                borderColor="border-color"
+                fontFamily="mono"
+                fontSize="xs"
+                dir="ltr"
+                maxLength={24}
+                _hover={{ borderColor: "syria.green.light" }}
+                _focus={{ borderColor: "syria.green.mid", boxShadow: "none" }}
+              />
+            </InputGroup>
+          </Box>
+
           <Box gridColumn={{ base: "span 1", lg: "span 2" }}>
             <Text
               fontSize="2xs"
