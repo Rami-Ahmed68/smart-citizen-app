@@ -38,10 +38,6 @@ export const setUnauthorizedHandler = (handler) => {
 
 const isDev = process.env.REACT_APP_NODE_ENV === "development";
 
-if (isDev) {
-  alert("Is Dev");
-}
-
 const devLog = (...args) => {
   if (isDev) {
     console.log("%c[api]", "color:#0ea5e9;font-weight:bold", ...args);
